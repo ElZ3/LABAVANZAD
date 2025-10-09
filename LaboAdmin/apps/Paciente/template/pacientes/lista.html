@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Pacientes</title>
+</head>
+<body>
+    <h1>Pacientes Registrados</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DUI</th>
+            <th>Correo</th>
+        </tr>
+        {% for p in pacientes %}
+        <tr>
+            <td>{{ p.paciente_id }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.apellido }}</td>
+            <td>{{ p.dui }}</td>
+            <td>{{ p.correo }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No hay pacientes registrados.</td></tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{% url 'registro_paciente' %}">Registrar nuevo paciente</a>
+</body>
+</html>
