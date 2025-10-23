@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Convenios{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Gestión de Convenios</h1>
+    <a href="{% url 'convenio_create' %}" class="btn btn-primary">Registrar Nuevo Convenio</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Contacto</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for convenio in convenios %}
+            <tr>
+                <td>{{ convenio.nombre }}</td>
+                <td>{{ convenio.tipo }}</td>
+                <td>{{ convenio.contacto }}</td>
+                <td>
+                    <span class="badge bg-{% if convenio.estado == 'Activo' %}success{% else %}danger{% endif %}">
+                        {{ convenio.estado }}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'convenio_update' convenio.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'convenio_delete' convenio.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No hay convenios registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+

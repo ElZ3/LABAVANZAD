@@ -1,0 +1,23 @@
+    {% extends "base.html" %}
+
+    {% block title %}{{ titulo }}{% endblock %}
+
+    {% block content %}
+    <h1>{{ titulo }}</h1>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">{{ form.nombre.label_tag }}{{ form.nombre }}</div>
+            <div class="col-md-6 mb-3">{{ form.apellido.label_tag }}{{ form.apellido }}</div>
+            <div class="col-md-6 mb-3">{{ form.fecha_nacimiento.label_tag }}{{ form.fecha_nacimiento }}</div>
+            <div class="col-md-6 mb-3">{{ form.sexo.label_tag }}{{ form.sexo }}</div>
+            <div class="col-md-6 mb-3">{{ form.dui.label_tag }}{{ form.dui }}</div>
+            <div class="col-md-6 mb-3">{{ form.telefono.label_tag }}{{ form.telefono }}</div>
+            <div class="col-12 mb-3">{{ form.correo.label_tag }}{{ form.correo }}</div>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'paciente_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+    {% endblock %}
+    
