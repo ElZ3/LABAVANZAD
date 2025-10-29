@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/ico" />
+
+    <title>Laboratorio Avanzad | {% block title %}Dashboard{% endblock %}</title>
+
+    <!-- CSS ESENCIALES -->
+    <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static '/FrWork/admin_lte/vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static '/FrWork/admin_lte/vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="{% static '/FrWork/admin_lte/vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="{% static '/FrWork/admin_lte/build/css/custom.css' %}" rel="stylesheet">
+    
+    <!-- CSS ADICIONAL POR MÓDULO -->
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="/" class="site_title">
+                <i class="fa fa-flask"></i> <span>Laboratorio Avanzad</span>
+              </a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+              <div class="profile_pic">
+                <img src="{% static 'images/user-default.jpg' %}" alt="Usuario" class="img-circle profile_img">
+              </div>
+              <div class="profile_info">
+                <span>Bienvenido,</span>
+                <h2>{{ user.nombre }} {{ user.apellido }}</h2>
+                <h2>{{ user.rol.nombre }}</h2>
+              </div>
+            </div>
+            <!-- /menu profile quick info -->
+
+            <br />
+
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3>Módulos Principales</h3>
+                <ul class="nav side-menu">
+                  <!-- Dashboard -->
+                  <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
+
+                  <!-- Módulo de Gestión de Pacientes -->
+                  <li><a><i class="fa fa-users"></i> Pacientes <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{% url 'paciente_list' %}">Gestion de Pacientes</a></li>
+                      <li><a href="/pacientes/busqueda/">Registro  de Paciente</a></li>
+                      <li><a href="/pacientes/historial/">Historial Clínico</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Órdenes y Recepción -->
+                  <li><a><i class="fa fa-file-text"></i> Órdenes <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/ordenes/registro/">Registro Rápido</a></li>
+                      <li><a href="/ordenes/gestion/">Gestión de Órdenes</a></li>
+                      <li><a href="/ordenes/plantillas/">Plantillas y Paquetes</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Control de Muestras -->
+                  <li><a><i class="fa fa-tint"></i> Muestras <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/muestras/registro/">Registro de Muestras</a></li>
+                      <li><a href="/muestras/trazabilidad/">Trazabilidad</a></li>
+                      <li><a href="/muestras/alertas/">Alertas de Tiempo</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Resultados -->
+                  <li><a><i class="fa fa-bar-chart"></i> Resultados <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/resultados/ingreso/">Ingreso de Resultados</a></li>
+                      <li><a href="/resultados/validacion/">Validación</a></li>
+                      <li><a href="/resultados/informes/">Generación de Informes</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Gestión de Exámenes -->
+                  <li><a><i class="fa fa-stethoscope"></i> Exámenes <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/examenes/catalogo/">Catálogo de Exámenes</a></li>
+                      <li><a href="/examenes/perfiles/">Perfiles y Paquetes</a></li>
+                      <li><a href="/examenes/valores-referencia/">Valores de Referencia</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="menu_section">
+                <h3>Módulos Administrativos</h3>
+                <ul class="nav side-menu">
+                  <!-- Módulo de Gestión de Pagos -->
+                  <li><a><i class="fa fa-money"></i> Pagos <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/pagos/registro/">Registro de Pagos</a></li>
+                      <li><a href="/pagos/estado-cuenta/">Estado de Cuenta</a></li>
+                      <li><a href="/pagos/facturacion/">Facturación</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Convenios -->
+                  <li><a><i class="fa fa-users"></i> Convenios <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="{% url 'convenio_list' %}">Gestión de Convenios</a></li>
+                      <li><a href="/convenios/precios/">Listas de Precios</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Reportes -->
+                  <li><a><i class="fa fa-line-chart"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/reportes/dashboard/">Dashboard Gerencial</a></li>
+                      <li><a href="/reportes/operativos/">Reportes Operativos</a></li>
+                      <li><a href="/reportes/exportacion/">Exportación de Datos</a></li>
+                    </ul>
+                  </li>
+
+                  <!-- Módulo de Usuarios y Seguridad -->
+                  <li><a><i class="fa fa-lock"></i> Administración <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                  
+                            <li class="nav-item"><a class="nav-link" href="{% url 'user_list' %}">Gestionar Usuarios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'rol_list' %}">Gestionar Roles</a></li> <!-- Nueva línea -->
+                            <li class="nav-item"><a class="nav-link" href="{% url 'convenio_list' %}">Gestionar Convenios</a></li>
+                      
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Configuración" href="/configuracion/">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Pantalla Completa" onclick="toggleFullScreen()">
+                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Bloquear" href="/bloquear/">
+                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Cerrar Sesión" href="/logout/">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+            </div>
+            <!-- /menu footer buttons -->
+          </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+          <div class="nav_menu">
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+            <nav class="nav navbar-nav">
+              <ul class="navbar-right">
+                <li class="nav-item dropdown open" style="padding-left: 15px;">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'images/user-default.jpg' %}" alt="icon">
+                    {{ user.username }}
+                  </a>
+                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/perfil/"> Perfil</a>
+                    <a class="dropdown-item" href="/ayuda/">Ayuda</a>
+                    <a class="dropdown-item" href="/logout/">
+                      <i class="fa fa-sign-out pull-right"></i> Cerrar Sesión
+                    </a>
+                  </div>
+                </li>
+
+                <!-- Notificaciones -->
+                <li role="presentation" class="nav-item dropdown open">
+                  <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="badge bg-green" id="notificacion-counter">0</span>
+                  </a>
+                  <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1" id="notificaciones-list">
+                    <li class="nav-item">
+                      <div class="text-center">
+                        <a class="dropdown-item" href="/notificaciones/">
+                          <strong>Ver Todas las Notificaciones</strong>
+                          <i class="fa fa-angle-right"></i>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- /top navigation -->
+
+        <!-- Contenido principal -->
+        <div class="right_col" role="main">
+          <!-- Mensajes del sistema -->
+          {% if messages %}
+            <div class="row">
+              <div class="col-md-12">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          {% block content %}
+          <!-- El contenido específico de cada página va aquí -->
+          {% endblock %}
+        </div>
+        <!-- /contenido principal -->
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Laboratorio Avanzad - Sistema de Gestión v1.0
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+      </div>
+    </div>
+
+    <!-- SCRIPTS ESENCIALES -->
+    <!-- jQuery -->
+    <script src="{% static '/FrWork/admin_lte/vendors/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static '/FrWork/admin_lte/vendors/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static '/FrWork/admin_lte/vendors/fastclick/lib/fastclick.js' %}"></script>
+    <!-- NProgress -->
+    <script src="{% static '/FrWork/admin_lte/vendors/nprogress/nprogress.js' %}"></script>
+    <!-- iCheck -->
+    <script src="{% static '/FrWork/admin_lte/vendors/iCheck/icheck.min.js' %}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="{% static '/FrWork/admin_lte/build/js/custom.min.js' %}"></script>
+
+    
+
+    <!-- Scripts globales del sistema -->
+    <script>
+    // Funciones globales para el sistema
+    $(document).ready(function() {
+        // Inicializar componentes
+        inicializarSistema();
+    });
+
+    function inicializarSistema() {
+        // Inicializar tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+        
+        // Inicializar iCheck para checkboxes y radios
+        if ($.fn.iCheck) {
+            $('input[type="checkbox"], input[type="radio"]').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+        }
+    }
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    function mostrarCargando(mensaje = 'Procesando...') {
+        // Crear overlay de carga si no existe
+        if (!$('#loading-overlay').length) {
+            $('body').append(`
+                <div id="loading-overlay" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 9999;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: white;
+                    font-size: 18px;
+                ">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="sr-only">Cargando...</span>
+                    </div>
+                    <span class="ml-2">${mensaje}</span>
+                </div>
+            `);
+        }
+        $('#loading-overlay').show();
+    }
+
+    function ocultarCargando() {
+        $('#loading-overlay').hide();
+    }
+
+    // Manejo de errores AJAX global
+    $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+        console.error('Error AJAX:', settings.url, thrownError);
+        ocultarCargando();
+        
+        // Mostrar error al usuario
+        if (jqxhr.responseJSON && jqxhr.responseJSON.error) {
+            alert('Error: ' + jqxhr.responseJSON.error);
+        } else {
+            alert('Ocurrió un error en la comunicación con el servidor.');
+        }
+    });
+    </script>
+    
+    <!-- Scripts adicionales por módulo -->
+    {% block extra_js %}{% endblock %}
+	
+  </body>
+</html>
