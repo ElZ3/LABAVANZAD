@@ -25,4 +25,8 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': ('username', 'email', 'nombre', 'apellido', 'dui', 'rol', 'estado', 'password1', 'password2'),
         }),
+<<<<<<< HEAD
     )
+=======
+    )
+>>>>>>> backup-local

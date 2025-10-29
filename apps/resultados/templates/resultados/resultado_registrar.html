@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Editar Resultado #{{ form.instance.pk }}{% else %}Registrar Nuevo Resultado{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-microscope me-2"></i>
+                        {% if form.instance.pk %}Editar Resultado #{{ form.instance.pk }}{% else %}Registrar Nuevo Resultado{% endif %}
+                    </h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {# Errores de formulario #}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Detalles del Informe</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        
+                                        <div class="row">
+                                            
+                                            {# Campo Valores Obtenidos (text) #}
+                                            <div class="col-md-12 mb-3">
+                                                <label for="{{ form.valores_obtenidos.id_for_label }}" class="form-label fw-bold">{{ form.valores_obtenidos.label }}</label>
+                                                <textarea name="{{ form.valores_obtenidos.name }}" id="{{ form.valores_obtenidos.id_for_label }}" class="form-control" rows="4">{{ form.valores_obtenidos.value|default_if_none:"" }}</textarea>
+                                                {% for error in form.valores_obtenidos.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                            </div>
+
+                                            {# Campo Observaciones (text) #}
+                                            <div class="col-md-12 mb-3">
+                                                <label for="{{ form.observaciones.id_for_label }}" class="form-label fw-bold">{{ form.observaciones.label }}</label>
+                                                <textarea name="{{ form.observaciones.name }}" id="{{ form.observaciones.id_for_label }}" class="form-control" rows="3">{{ form.observaciones.value|default_if_none:"" }}</textarea>
+                                                {% for error in form.observaciones.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                            </div>
+
+                                            {# Campo Validado por (int) #}
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.validado_por.id_for_label }}" class="form-label fw-bold">{{ form.validado_por.label }}</label>
+                                                <input type="number" name="{{ form.validado_por.name }}" id="{{ form.validado_por.id_for_label }}" class="form-control" value="{{ form.validado_por.value|default_if_none:form.validado_por.initial }}">
+                                                {% for error in form.validado_por.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                            </div>
+                                            
+                                            {# Campo Fecha de Validación (datetime) #}
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.fecha_validacion.id_for_label }}" class="form-label fw-bold">{{ form.fecha_validacion.label }}</label>
+                                                <input type="datetime-local" name="{{ form.fecha_validacion.name }}" id="{{ form.fecha_validacion.id_for_label }}" class="form-control" value="{{ form.fecha_validacion.value|date:'Y-m-d\TH:i'|default_if_none:form.fecha_validacion.initial|date:'Y-m-d\TH:i' }}">
+                                                {% for error in form.fecha_validacion.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                            </div>
+
+                                            {# Campo Estado (varchar/choice) #}
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">{{ form.estado.label }}</label>
+                                                {{ form.estado }} 
+                                                {% for error in form.estado.errors %}<small class="text-danger d-block">{{ error }}</small>{% endfor %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'resultado_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar Resultado</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

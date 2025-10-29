@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión de Muestras de Laboratorio{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-12">
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h1 class="text-dark fw-bold">
+                    <i class="fas fa-microscope me-2" style="color: #2A3F54;"></i> Gestión de Muestras
+                </h1>
+                <a href="{% url 'muestra_create' %}" class="btn btn-success btn-lg shadow-sm">
+                    <i class="fa-solid fa-plus me-1"></i> Registrar Nueva Muestra
+                </a>
+            </div>
+
+            <p class="text-muted mb-4">Administra la toma, seguimiento y análisis de muestras de laboratorio.</p>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="mb-0"><i class="fas fa-flask me-2"></i>Listado de Muestras</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    
+                    <div class="table-responsive">
+                        <table id="tablaMuestras" class="table table-striped table-hover align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="py-3" style="width: 10%;"># Muestra</th>
+                                    <th scope="col" class="py-3" style="width: 20%;">Tipo</th>
+                                    <th scope="col" class="py-3" style="width: 25%;">Fecha Toma</th>
+                                    <th scope="col" class="py-3" style="width: 25%;">Responsable</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 10%;">Estado</th>
+                                    <th scope="col" class="py-3 text-center actions-column" style="width: 10%;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for muestra in muestras %}
+                                <tr>
+                                    <td>{{ muestra.pk }}</td>
+                                    <td>{{ muestra.tipo }}</td>
+                                    <td>{{ muestra.fecha_toma }}</td>
+                                    <td>{{ muestra.responsable }}</td>
+                                    <td class="text-center">
+                                        <span class="badge 
+                                            {% if muestra.estado == 'En Análisis' %}bg-primary{% elif muestra.estado == 'Recibida' %}bg-info{% else %}bg-secondary{% endif %}">
+                                            {{ muestra.estado }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'muestra_update' pk=muestra.pk %}" class="btn btn-sm btn-primary" title="Editar"><i class="fas fa-edit"></i></a>
+                                        <a href="{% url 'muestra_delete' pk=muestra.pk %}" class="btn btn-sm btn-danger" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                        <p class="mb-0 text-muted">No hay muestras registradas.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

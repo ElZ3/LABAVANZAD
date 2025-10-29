@@ -1,3 +1,4 @@
+<<<<<<< HEAD
     {% extends "base.html" %}
 
     {% block title %}{{ titulo }}{% endblock %}
@@ -21,3 +22,107 @@
     </form>
     {% endblock %}
     
+=======
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-user-injured me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Datos Personales</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombre</label>
+                                                {{ form.nombre }}
+                                                {% if form.nombre.errors %}<div class="text-danger small">{{ form.nombre.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.apellido.id_for_label }}" class="form-label fw-bold">Apellido</label>
+                                                {{ form.apellido }}
+                                                {% if form.apellido.errors %}<div class="text-danger small">{{ form.apellido.errors }}</div>{% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.fecha_nacimiento.id_for_label }}" class="form-label fw-bold">Fecha de Nacimiento</label>
+                                                {{ form.fecha_nacimiento }}
+                                                {% if form.fecha_nacimiento.errors %}<div class="text-danger small">{{ form.fecha_nacimiento.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.sexo.id_for_label }}" class="form-label fw-bold">Sexo</label>
+                                                {{ form.sexo }}
+                                                {% if form.sexo.errors %}<div class="text-danger small">{{ form.sexo.errors }}</div>{% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.dui.id_for_label }}" class="form-label fw-bold">DUI</label>
+                                                {{ form.dui }}
+                                                {% if form.dui.errors %}<div class="text-danger small">{{ form.dui.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.telefono.id_for_label }}" class="form-label fw-bold">Teléfono</label>
+                                                {{ form.telefono }}
+                                                {% if form.telefono.errors %}<div class="text-danger small">{{ form.telefono.errors }}</div>{% endif %}
+                                            </div>
+
+                                            <div class="col-12 mb-3">
+                                                <label for="{{ form.correo.id_for_label }}" class="form-label fw-bold">Correo Electrónico</label>
+                                                {{ form.correo }}
+                                                {% if form.correo.errors %}<div class="text-danger small">{{ form.correo.errors }}</div>{% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'paciente_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar</button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Consejos Útiles</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="fas fa-hospital-user text-warning me-2"></i>Datos Demográficos</h6>
+                                        <ul class="ps-3 mb-3">
+                                            <li>La "Fecha de Nacimiento" es crucial para calcular la edad correcta, vital en los resultados de laboratorio.</li>
+                                            <li>El campo "Sexo" es fundamental para aplicar los rangos de referencia adecuados en los exámenes.</li>
+                                        </ul>
+                                        <h6 class="fw-bold"><i class="fas fa-address-book text-info me-2"></i>Contacto y Citas</h6>
+                                        <ul class="ps-3">
+                                            <li>El "Teléfono" y el "Correo" permiten la notificación rápida de resultados o la gestión de citas.</li>
+                                            <li>El "DUI" (o Documento de Identidad) asegura la unicidad del registro del paciente.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+>>>>>>> backup-local

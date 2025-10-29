@@ -31,6 +31,12 @@ def login_view(request):
                     user = None
 
             if user is not None:
+<<<<<<< HEAD
+=======
+                if user.estado != 'Activo':
+                    messages.error(request, "Tu cuenta se encuentra inactiva. Contacta al administrador.")
+                    return render(request, 'usuarios/login.html', {'form': form})
+>>>>>>> backup-local
                 login(request, user)
                 return redirect('dashboard')
             else:
@@ -76,7 +82,11 @@ class UserCreateView(AdminRequiredMixin, CreateView):
     success_url = reverse_lazy('user_list')
 
     def form_valid(self, form):
+<<<<<<< HEAD
         messages.success(self.request, "Usuario creado exitosamente.")
+=======
+        messages.success(self.request, "Empleado creado exitosamente.")
+>>>>>>> backup-local
         return super().form_valid(form)
 
 class UserUpdateView(AdminRequiredMixin, UpdateView):
@@ -86,7 +96,11 @@ class UserUpdateView(AdminRequiredMixin, UpdateView):
     success_url = reverse_lazy('user_list')
 
     def form_valid(self, form):
+<<<<<<< HEAD
         messages.success(self.request, "Usuario actualizado exitosamente.")
+=======
+        messages.success(self.request, "Empleado actualizado exitosamente.")
+>>>>>>> backup-local
         return super().form_valid(form)
 
 class UserDeleteView(AdminRequiredMixin, DeleteView):
@@ -115,12 +129,31 @@ class ProfileView(LoginRequiredMixin, DetailView):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Usuario
     form_class = ProfileUpdateForm
+<<<<<<< HEAD
     template_name = 'usuarios/editar_perfil.html'
+=======
+    template_name = 'usuarios/editar_perfil.html' # Asegúrate de que sea 'usuarios/editar_perfil.html'
+>>>>>>> backup-local
     success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def form_valid(self, form):
+<<<<<<< HEAD
         messages.success(self.request, "Tu perfil ha sido actualizado exitosamente.")
         return super().form_valid(form)
+=======
+        # Si se cambió la contraseña, loguear al usuario de nuevo para actualizar la sesión
+        # Solo si se está usando una forma de autenticación basada en sesión y la contraseña fue modificada
+        if form.cleaned_data.get('new_password1'):
+             messages.success(self.request, "Tu perfil y contraseña han sido actualizados exitosamente.")
+             response = super().form_valid(form)
+             # Re-autenticar al usuario para evitar invalidación de la sesión
+             from django.contrib.auth import update_session_auth_hash
+             update_session_auth_hash(self.request, self.object)
+             return response
+        else:
+             messages.success(self.request, "Tu perfil ha sido actualizado exitosamente.")
+             return super().form_valid(form)
+>>>>>>> backup-local
