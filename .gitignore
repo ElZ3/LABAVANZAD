@@ -1,43 +1,41 @@
-# Entorno virtual
-venv/
-.venv/
-env/
-
-# Python
+# --- Python / Django ---
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
 *.so
 .Python
+*.egg-info/
+.eggs/
 build/
-develop-eggs/
 dist/
 downloads/
-eggs/
-.eggs/
-lib/
-lib64/
+develop-eggs/
 parts/
 sdk/
 var/
 wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+
+# Entornos virtuales (no versionar)
+venv/
+.venv/
+env/
+ENV/
 
 # Django
 *.log
 local_settings.py
 db.sqlite3
+staticfiles/
 media/
 
-# Environments
+# Variables de entorno 
 .env
-.venv
 
-# IDE
-.vscode/
+# VS Code / IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
@@ -51,10 +49,8 @@ media/
 ehthumbs.db
 Thumbs.db
 
-# Archivos de base de datos
+# Bases de datos / backups
 *.mdf
 *.ldf
 *.sqlite3
 
-# Logs
-*.log
