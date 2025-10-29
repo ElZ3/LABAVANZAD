@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-microscope me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Detalles del Examen</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombre</label>
+                                                {{ form.nombre }}
+                                                {% if form.nombre.errors %}<div class="text-danger small">{{ form.nombre.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.codigo.id_for_label }}" class="form-label fw-bold">Código</label>
+                                                {{ form.codigo }}
+                                                {% if form.codigo.errors %}<div class="text-danger small">{{ form.codigo.errors }}</div>{% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.categoria.id_for_label }}" class="form-label fw-bold">Categoría</label>
+                                                {{ form.categoria }}
+                                                {% if form.categoria.errors %}<div class="text-danger small">{{ form.categoria.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.tipo_muestra.id_for_label }}" class="form-label fw-bold">Tipo de Muestra</label>
+                                                {{ form.tipo_muestra }}
+                                                {% if form.tipo_muestra.errors %}<div class="text-danger small">{{ form.tipo_muestra.errors }}</div>{% endif %}
+                                            </div>
+
+                                            <div class="col-md-12 mb-3">
+                                                <label for="{{ form.valor_referencia.id_for_label }}" class="form-label fw-bold">Valores de Referencia</label>
+                                                {{ form.valor_referencia }}
+                                                {% if form.valor_referencia.errors %}<div class="text-danger small">{{ form.valor_referencia.errors }}</div>{% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-12 mb-3">
+                                                <label for="{{ form.metodo.id_for_label }}" class="form-label fw-bold">Método de Análisis</label>
+                                                {{ form.metodo }}
+                                                {% if form.metodo.errors %}<div class="text-danger small">{{ form.metodo.errors }}</div>{% endif %}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-dollar-sign me-2"></i>Información Económica y Estado</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.precio.id_for_label }}" class="form-label fw-bold">Precio ($)</label>
+                                                {{ form.precio }}
+                                                {% if form.precio.errors %}<div class="text-danger small">{{ form.precio.errors }}</div>{% endif %}
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                                {{ form.estado }}
+                                                {% if form.estado.errors %}<div class="text-danger small">{{ form.estado.errors }}</div>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'examen_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar</button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Consejos Útiles</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="fas fa-vial text-warning me-2"></i>Detalles Técnicos</h6>
+                                        <ul class="ps-3 mb-3">
+                                            <li>El "Código" es único y crítico para la facturación y los sistemas de laboratorio (LIS).</li>
+                                            <li>El "Método de Análisis" es fundamental para la validación y el control de calidad de los resultados.</li>
+                                            <li>Defina claramente el "Tipo de Muestra" (ej. "Suero", "Orina 24h").</li>
+                                        </ul>
+                                        <h6 class="fw-bold"><i class="fas fa-chart-line text-info me-2"></i>Valores y Precios</h6>
+                                        <ul class="small ps-3">
+                                            <li>Los "Valores de Referencia" deben ser específicos para el grupo poblacional de su laboratorio.</li>
+                                            <li>El "Precio" es el costo base antes de aplicar cualquier descuento de convenio.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

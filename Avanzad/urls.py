@@ -28,6 +28,15 @@ urlpatterns = [
         path('', include('roles.urls')),
         path('', include('pacientes.urls')),
         path('', include('convenios.urls')),
+<<<<<<< HEAD
+=======
+        path('', include('categorias.urls')),
+        path('', include('examenes.urls')),
+        path('', include('ordenes.urls')),
+        path('', include('muestras.urls')),
+        path('', include('resultados.urls')),
+        path('', include('paquetes.urls')),
+>>>>>>> backup-local
         
         # Ruta para el dashboard (requiere login)
         path('dashboard/', TemplateView.as_view(template_name="dashboard.html"), name='dashboard'),

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-list-alt me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if messages %}
+                        <div class="messages mb-4">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4" role="alert">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Error en el Formulario</h4>
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de Categoría</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombre</label>
+                                            {{ form.nombre }}
+                                            {% for error in form.nombre.errors %}
+                                            <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="{{ form.descripcion.id_for_label }}" class="form-label fw-bold">Descripción</label>
+                                            {{ form.descripcion }}
+                                            {% for error in form.descripcion.errors %}
+                                            <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Estado</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                            {{ form.estado }}
+                                            {% for error in form.estado.errors %}
+                                            <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'categoria_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar</button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Consejos útiles</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="fas fa-lightbulb text-warning me-2"></i>Para la Categoría</h6>
+                                        <ul class="ps-3">
+                                            <li>El nombre debe ser único.</li>
+                                            <li>La descripción debe ser concisa y clara.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

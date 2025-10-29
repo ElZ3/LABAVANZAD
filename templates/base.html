@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+<<<<<<< HEAD
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -287,21 +288,392 @@
                 radioClass: 'iradio_flat-green'
             });
         }
+=======
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static '/images/Avanzadicon.png' %}" type="image/ico">
+
+    <title>Laboratorio Avanzad | {% block title %}Dashboard{% endblock %}</title>
+
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- Custom Theme Style -->
+    <link href="{% static '/css/custom.css' %}" rel="stylesheet">
+    
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <!-- Sidebar -->
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="/" class="site_title">
+                            <img src="{% static '/images/Avanzadicon.png' %}" alt="Avanzad">
+                            <span>Avanzad</span>
+                        </a>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <!-- Perfil de usuario -->
+                    <div class="profile clearfix">
+                        <div class="profile_info">
+                            <span>Bienvenido,</span>
+                            <h2>{{ user.nombre }} {{ user.apellido }}</h2>
+                            <h2>{{ user.rol.nombre }}</h2>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <!-- Menú lateral -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Módulos Principales</h3>
+                            <ul class="nav side-menu">
+                                <!-- Dashboard -->
+                                <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard </a></li>
+
+                                <!-- Módulo de Gestión de Pacientes -->
+                                <li>
+                                    <a><i class="fa fa-users"></i> Pacientes <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'paciente_list' %}">Gestion de Pacientes</a></li>
+                                        <li><a href="{% url 'paciente_create' %}">Registro de Paciente</a></li>
+                                        <li><a href="/pacientes/historial/">Historial Clínico</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Órdenes y Recepción -->
+                                <li>
+                                    <a><i class="fa fa-file-text"></i> Órdenes <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'orden_create' %}">Registro Rápido</a></li>
+                                        <li><a href="{% url 'orden_list' %}">Gestión de Órdenes</a></li>
+                                        <li><a href="/ordenes/plantillas/">Plantillas y Paquetes</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Control de Muestras -->
+                                <li>
+                                    <a><i class="fa fa-tint"></i> Muestras <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'muestra_list' %}">Gestion de Muestras</a></li>
+                                        <li><a href="/muestras/trazabilidad/">Trazabilidad</a></li>
+                                        <li><a href="/muestras/alertas/">Alertas de Tiempo</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Resultados -->
+                                <li>
+                                    <a><i class="fa fa-bar-chart"></i> Resultados <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'resultado_create' %}">Ingreso de Resultados</a></li>
+                                        <li><a href="/resultados/validacion/">Validación</a></li>
+                                        <li><a href="{% url 'resultado_list' %}">Generación de Informes</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Gestión de Exámenes -->
+                                <li>
+                                    <a><i class="fa fa-stethoscope"></i> Exámenes <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'examen_list' %}">Catálogo de Exámenes</a></li>
+                                        <li><a href="{% url 'paquete_list' %}">Perfiles y Paquetes</a></li>
+                                        <li><a href="{% url 'categoria_list' %}">Categoria</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="menu_section">
+                            <h3>Módulos Administrativos</h3>
+                            <ul class="nav side-menu">
+                                <!-- Módulo de Gestión de Pagos -->
+                                <li>
+                                    <a><i class="fa fa-money"></i> Pagos <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/pagos/registro/">Registro de Pagos</a></li>
+                                        <li><a href="/pagos/estado-cuenta/">Estado de Cuenta</a></li>
+                                        <li><a href="/pagos/facturacion/">Facturación</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Convenios -->
+                                <li>
+                                    <a><i class="fas fa-handshake me-2"></i> Convenios <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'convenio_list' %}">Gestión de Convenios</a></li>
+                                        <li><a href="/convenios/precios/">Listas de Precios</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Reportes -->
+                                <li>
+                                    <a><i class="fa fa-line-chart"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/reportes/dashboard/">Dashboard Gerencial</a></li>
+                                        <li><a href="/reportes/operativos/">Reportes Operativos</a></li>
+                                        <li><a href="/reportes/exportacion/">Exportación de Datos</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Módulo de Administración -->
+                                <li>
+                                    <a><i class="fa fa-lock"></i> Administración <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{% url 'user_list' %}">Gestionar Empleados</a></li>
+                                        <li><a href="{% url 'rol_list' %}">Gestionar Roles</a></li>
+                                        <li><a href="{% url 'convenio_list' %}">Gestionar Convenios</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Footer del sidebar -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pantalla Completa" onclick="toggleFullScreen()">
+                            <span class="fa-solid fa-expand" aria-hidden="true"></span>
+                        </a>
+                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Cerrar Sesión" href="/logout/">
+                            <span class="fa-solid fa-power-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación superior -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <nav class="nav navbar-nav">
+                        <ul class="navbar-right">
+                            <!-- Perfil de usuario -->
+                            <li class="nav-item dropdown">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{% static '/images/user.png' %}" alt="icon">
+                                    <span>{{ user.username }}</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-usermenu">
+                                    <a class="dropdown-item" href="/perfil/">Perfil</a>
+                                    <a class="dropdown-item" href="/ayuda/">Ayuda</a>
+                                    <a class="dropdown-item" href="/logout/">Cerrar Sesión</a>
+                                </div>
+                            </li>
+
+                            <!-- Notificaciones -->
+                            <li class="nav-item dropdown">
+                                <a href="javascript:;" class="dropdown-toggle info-number" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-bell-o"></i>
+                                    <span class="badge bg-green" id="notificacion-counter">0</span>
+                                </a>
+                                <ul class="dropdown-menu list-unstyled msg_list" aria-labelledby="navbarDropdown1" id="notificaciones-list">
+                                    <li class="nav-item">
+                                        <div class="text-center">
+                                            <a class="dropdown-item" href="/notificaciones/">
+                                                <strong>Ver Todas las Notificaciones</strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="right_col" role="main">
+                <!-- Mensajes del sistema -->
+                {% if messages %}
+                <div class="row">
+                    <div class="col-md-12">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% block content %}
+                <!-- El contenido específico de cada página va aquí -->
+                {% endblock %}
+            </div>
+
+            <!-- Footer -->
+            <footer>
+                <div class="float-end">
+                    Laboratorio Avanzad - Sistema de Gestión v1.0
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+        </div>
+    </div>
+
+     <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Todo el JavaScript necesario integrado (sin archivos externos) -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        inicializarSistema();
+        configurarMenuToggle();
+        configurarSubmenus();
+         resaltarMenuActivo();
+    });
+
+    // Función para resaltar el menú activo
+    function resaltarMenuActivo() {
+        const currentUrl = window.location.pathname;
+        const menuItems = document.querySelectorAll('.nav.side-menu > li > a');
+        let activeFound = false;
+
+        // Buscar en items principales
+        menuItems.forEach(item => {
+            const itemUrl = item.getAttribute('href');
+            if (itemUrl && currentUrl.startsWith(itemUrl) && itemUrl !== '/') {
+                item.parentElement.classList.add('active', 'current-page');
+                activeFound = true;
+                
+                // Si tiene submenú, expandirlo
+                const submenu = item.nextElementSibling;
+                if (submenu && submenu.classList.contains('child_menu')) {
+                    submenu.style.display = 'block';
+                }
+            } else {
+                item.parentElement.classList.remove('active', 'current-page');
+            }
+        });
+
+        // Si no se encontró activo en items principales, buscar en submenús
+        if (!activeFound) {
+            const submenuItems = document.querySelectorAll('.nav.child_menu li a');
+            submenuItems.forEach(item => {
+                const itemUrl = item.getAttribute('href');
+                if (itemUrl && currentUrl.startsWith(itemUrl)) {
+                    item.parentElement.classList.add('active');
+                    
+                    // Activar el padre y expandir submenú
+                    const parentLi = item.closest('.nav.side-menu > li');
+                    if (parentLi) {
+                        parentLi.classList.add('active', 'current-page');
+                        const submenu = parentLi.querySelector('.nav.child_menu');
+                        if (submenu) {
+                            submenu.style.display = 'block';
+                        }
+                    }
+                    activeFound = true;
+                }
+            });
+        }
+
+        // Resaltar Dashboard por defecto si es la raíz
+        if (currentUrl === '/' && !activeFound) {
+            const dashboardItem = document.querySelector('a[href="{% url 'dashboard' %}"]');
+            if (dashboardItem) {
+                dashboardItem.parentElement.classList.add('active', 'current-page');
+            }
+        }
+    }
+
+
+    function inicializarSistema() {
+        // Tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        
+        // Dropdowns
+        const dropdownList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+        dropdownList.map(dropdown => new bootstrap.Dropdown(dropdown));
+    }
+
+    function configurarMenuToggle() {
+        const menuToggle = document.getElementById('menu_toggle');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                document.body.classList.toggle('nav-sm');
+                document.body.classList.toggle('nav-md');
+                
+                // Opcional: Guardar preferencia en localStorage
+                localStorage.setItem('sidebarCollapsed', document.body.classList.contains('nav-sm'));
+            });
+        }
+        
+        // Cargar estado del sidebar desde localStorage
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (sidebarCollapsed) {
+            document.body.classList.add('nav-sm');
+            document.body.classList.remove('nav-md');
+        }
+    }
+
+    function configurarSubmenus() {
+        const menuItems = document.querySelectorAll('.nav.side-menu > li > a');
+        
+        menuItems.forEach(menuItem => {
+            if (menuItem.nextElementSibling?.classList.contains('child_menu')) {
+                menuItem.addEventListener('click', function(e) {
+                    // Si es modo collapsed (nav-sm), no hacer nada (los submenús son hover)
+                    if (document.body.classList.contains('nav-sm')) {
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    const isVisible = submenu.style.display === 'block';
+                    
+                    // Cerrar otros submenús
+                    document.querySelectorAll('.nav.child_menu').forEach(sub => {
+                        if (sub !== submenu) sub.style.display = 'none';
+                    });
+                    
+                    // Alternar submenú actual
+                    submenu.style.display = isVisible ? 'none' : 'block';
+                });
+            }
+        });
+>>>>>>> backup-local
     }
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
+<<<<<<< HEAD
                 console.log(`Error attempting to enable full-screen mode: ${err.message}`);
             });
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             }
+=======
+                console.log('Error en pantalla completa:', err);
+            });
+        } else {
+            document.exitFullscreen();
+>>>>>>> backup-local
         }
     }
 
     function mostrarCargando(mensaje = 'Procesando...') {
+<<<<<<< HEAD
         // Crear overlay de carga si no existe
         if (!$('#loading-overlay').length) {
             $('body').append(`
@@ -351,4 +723,66 @@
     {% block extra_js %}{% endblock %}
 	
   </body>
+=======
+        if (!document.getElementById('loading-overlay')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'loading-overlay';
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 9999;
+                display: flex; justify-content: center; align-items: center;
+                color: white; font-size: 18px;
+            `;
+            overlay.innerHTML = `
+                <div class="spinner-border text-light" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <span class="ms-2">${mensaje}</span>
+            `;
+            document.body.appendChild(overlay);
+        } else {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+    }
+
+    function ocultarCargando() {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.style.display = 'none';
+    }
+
+    // Función moderna para peticiones HTTP
+    async function apiRequest(url, options = {}) {
+        try {
+            mostrarCargando();
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                    ...options.headers
+                },
+                ...options
+            });
+            
+            if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+            
+            const data = await response.json();
+            ocultarCargando();
+            return data;
+            
+        } catch (error) {
+            console.error('Error en API:', error);
+            ocultarCargando();
+            alert('Error de comunicación con el servidor');
+            throw error;
+        }
+    }
+
+    function getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+    }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+>>>>>>> backup-local
 </html>

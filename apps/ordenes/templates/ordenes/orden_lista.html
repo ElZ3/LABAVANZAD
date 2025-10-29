@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión de Órdenes de Laboratorio{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-11">
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h1 class="text-dark fw-bold">
+                    <i class="fa-solid fa-vial-circle-check me-2" style="color: #2A3F54;"></i> Gestión de Órdenes
+                </h1>
+                <a href="{% url 'orden_create' %}" class="btn btn-success btn-lg shadow-sm">
+                    <i class="fa-solid fa-plus me-1"></i> Registrar Nueva Orden
+                </a>
+            </div>
+
+            <p class="text-muted mb-4">Administra el flujo de trabajo de las órdenes de análisis de laboratorio.</p>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="mb-0"><i class="fas fa-list-alt me-2"></i>Listado de Órdenes</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group input-group-sm border rounded-pill shadow-sm">
+                                <span class="input-group-text bg-white border-0 ps-3 rounded-start-pill" id="search-icon">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-0 pe-3 rounded-end-pill" id="searchInput" placeholder="Buscar orden o paciente...">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="tablaOrdenes" class="table table-striped table-hover align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="py-3" style="width: 10%;"># Orden</th>
+                                    <th scope="col" class="py-3" style="width: 20%;">Paciente</th>
+                                    <th scope="col" class="py-3" style="width: 15%;">Fecha Creación</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 15%;">Prioridad</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 15%;">Estado</th>
+                                    <th scope="col" class="py-3 text-center actions-column" style="width: 10%;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% comment %} 
+                                    Se elimina el bucle {% for orden in ordenes %} para forzar el estado vacío.
+                                    Si la lista 'ordenes' está vacía (como quieres), se mostrará el bloque 'empty'.
+                                {% endcomment %}
+                                {% for orden in ordenes %}
+                                    {# Contenido de fila eliminado #}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                        <p class="mb-0 text-muted">No hay órdenes registradas.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'ordenes/js/orden_list.js' %}"></script>
+{% endblock %}
+
+{% endblock %}
