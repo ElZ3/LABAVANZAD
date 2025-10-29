@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar Muestra #{{ object.pk }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0 text-center"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar Eliminación</h3>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="lead">¿Estás seguro de que deseas eliminar la **Muestra #{{ object.pk }}**?</p>
+                    <p>Esta muestra es de tipo **{{ object.tipo }}** y será eliminada permanentemente.</p>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <a href="{% url 'muestra_list' %}" class="btn btn-secondary btn-lg me-3"><i class="fas fa-arrow-left me-2"></i>Cancelar</a>
+                        <button type="submit" class="btn btn-danger btn-lg"><i class="fas fa-trash-alt me-2"></i>Confirmar Eliminación</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

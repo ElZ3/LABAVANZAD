@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-handshake me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información General</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombre</label>
+                                                {{ form.nombre }}
+                                                {# ERROR DISPLAY: Muestra el error de validación de no-vacío y no-números #}
+                                                {% for error in form.nombre.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="{{ form.tipo.id_for_label }}" class="form-label fw-bold">Tipo</label>
+                                                {{ form.tipo }}
+                                                {% for error in form.tipo.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                                {{ form.estado }}
+                                                {% for error in form.estado.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>Información de Contacto</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.persona_contacto.id_for_label }}" class="form-label fw-bold">Persona de Contacto</label>
+                                                {{ form.persona_contacto }}
+                                                {# ERROR DISPLAY: Muestra el error de validación de no-vacío y no-números #}
+                                                {% for error in form.persona_contacto.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.telefono_contacto.id_for_label }}" class="form-label fw-bold">Teléfono</label>
+                                                {{ form.telefono_contacto }}
+                                                {# ERROR DISPLAY: Muestra el error de validación de no-vacío y 8-dígitos #}
+                                                {% for error in form.telefono_contacto.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.correo_contacto.id_for_label }}" class="form-label fw-bold">Correo</label>
+                                                {{ form.correo_contacto }}
+                                                {# ERROR DISPLAY: Muestra el error de validación de no-vacío y formato #}
+                                                {% for error in form.correo_contacto.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-money-check-alt me-2"></i>Condiciones Comerciales</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.tipo_facturacion.id_for_label }}" class="form-label fw-bold">Tipo de Facturación</label>
+                                                {{ form.tipo_facturacion }}
+                                                {% for error in form.tipo_facturacion.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.descuento_general.id_for_label }}" class="form-label fw-bold">Descuento General (%)</label>
+                                                {{ form.descuento_general }}
+                                                {% for error in form.descuento_general.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label for="{{ form.condiciones_pago.id_for_label }}" class="form-label fw-bold">Condiciones de Pago</label>
+                                                {{ form.condiciones_pago }}
+                                                {# ERROR DISPLAY: Muestra el error de validación de no-vacío #}
+                                                {% for error in form.condiciones_pago.errors %}
+                                                <div class="text-danger small mt-1"><i class="fas fa-times-circle me-1"></i>{{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
+                                        
+                                        <h5 class="mb-3"><i class="fas fa-tags me-2"></i>Descuentos Específicos por Examen</h5>
+                                        
+                                        {% if descuento_formset.non_form_errors %}
+                                        <div class="alert alert-danger small" role="alert">
+                                            {% for error in descuento_formset.non_form_errors %}{{ error }}{% endfor %}
+                                        </div>
+                                        {% endif %}
+
+                                        <p class="text-muted small mb-3">
+                                            Estos descuentos **anulan** el descuento general para el examen especificado.
+                                        </p>
+                                        
+                                        {{ descuento_formset.management_form }}
+                                        
+                                        <div class="row fw-bold small text-muted mb-2 border-bottom pb-1">
+                                            <div class="col-md-6">Examen</div>
+                                            <div class="col-md-4">Descuento (%)</div>
+                                            <div class="col-md-2">Eliminar</div>
+                                        </div>
+
+                                        <div id="descuento-formset">
+                                            {% for d_form in descuento_formset %}
+                                            <div class="row align-items-center mb-2 p-1 border-bottom descuento-form">
+                                                {{ d_form.id }} <div class="col-md-6">
+                                                    {{ d_form.examen }}
+                                                    {% for error in d_form.examen.errors %}
+                                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    {{ d_form.porcentaje_descuento }}
+                                                    {% for error in d_form.porcentaje_descuento.errors %}
+                                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-center">
+                                                    {% if d_form.instance.pk %}
+                                                         {# Contenedor oculto para el checkbox DELETE real #}
+                                                        <div style="display: none;">{{ d_form.DELETE }}</div>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-existing-button" data-form-index="{{ forloop.counter0 }}">
+                                                             <i class="fas fa-times"></i>
+                                                        </button>
+                                                    {% else %}
+                                                        <button type="button" class="btn btn-sm btn-outline-danger remove-form-button">
+                                                             <i class="fas fa-times"></i>
+                                                        </button>
+                                                    {% endif %}
+                                                </div>
+
+                                                {% if d_form.non_field_errors %}
+                                                <div class="col-12 text-danger small">
+                                                    {% for error in d_form.non_field_errors %}{{ error }}{% endfor %}
+                                                </div>
+                                                {% endif %}
+
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        <div class="text-end mt-3">
+                                            <button type="button" class="btn btn-sm btn-primary" id="add-descuento-form"><i class="fas fa-plus me-1"></i>Añadir Descuento</button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'convenio_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar</button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 70px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Consejos útiles</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="fas fa-lightbulb text-warning me-2"></i>Información General</h6>
+                                        <ul class="ps-3 mb-3">
+                                            <li>El "Nombre" debe identificar claramente al cliente o entidad **sin usar números**.</li>
+                                            <li>El "Tipo" (ej. Empresa, Aseguradora) ayuda a la clasificación.</li>
+                                        </ul>
+                                        <h6 class="fw-bold"><i class="fas fa-percent text-info me-2"></i>Descuentos</h6>
+                                        <ul class="ps-3 mb-3">
+                                            <li>Asegúrese de que la **Persona de Contacto no tenga números**.</li>
+                                            <li>El **Teléfono** debe ser de **8 dígitos**.</li>
+                                            <li>Las **Condiciones de Pago** no pueden estar vacías, aunque sí aceptan números.</li>
+                                            <li>Los descuentos "Específicos" tienen prioridad sobre el general.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'convenios/js/convenios_descuentos.js' %}"></script>
+{% endblock %}
+
+{% endblock %}
