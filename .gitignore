@@ -1,69 +1,31 @@
-<<<<<<< HEAD
-# Entorno virtual
-venv/
-.venv/
-env/
-
-# Python
-__pycache__/
-*.pyc
-=======
 # --- Python / Django ---
 __pycache__/
 *.py[cod]
->>>>>>> backup-local
 *.pyo
 *.pyd
 *.so
 .Python
-<<<<<<< HEAD
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-=======
 *.egg-info/
 .eggs/
 build/
 dist/
 downloads/
 develop-eggs/
->>>>>>> backup-local
 parts/
 sdk/
 var/
 wheels/
-<<<<<<< HEAD
-*.egg-info/
-.installed.cfg
-*.egg
-=======
 
 # Entornos virtuales (no versionar)
 venv/
 .venv/
 env/
 ENV/
->>>>>>> backup-local
 
 # Django
 *.log
 local_settings.py
 db.sqlite3
-<<<<<<< HEAD
-media/
-
-# Environments
-.env
-.venv
-
-# IDE
-.vscode/
-=======
 staticfiles/
 media/
 
@@ -74,7 +36,6 @@ media/
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
->>>>>>> backup-local
 .idea/
 *.swp
 *.swo
@@ -88,17 +49,8 @@ media/
 ehthumbs.db
 Thumbs.db
 
-<<<<<<< HEAD
-# Archivos de base de datos
-*.mdf
-*.ldf
-*.sqlite3
-
-# Logs
-*.log
-=======
 # Bases de datos / backups
 *.mdf
 *.ldf
 *.sqlite3
->>>>>>> backup-local
+
