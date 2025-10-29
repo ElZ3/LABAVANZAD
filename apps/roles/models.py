@@ -8,11 +8,7 @@ class Rol(models.Model):
             ('Activo', 'Activo'),
             ('Inactivo', 'Inactivo'),
         ]
-<<<<<<< HEAD
-
-=======
         rol_id = models.AutoField(primary_key=True)
->>>>>>> backup-local
         nombre = models.CharField(max_length=50, unique=True, blank=False)
         descripcion = models.TextField(blank=False)
         estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activo', blank=False)

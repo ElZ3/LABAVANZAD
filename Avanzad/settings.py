@@ -46,15 +46,12 @@ INSTALLED_APPS = [
     'roles',
     'pacientes',
     'convenios',
-<<<<<<< HEAD
-=======
     'categorias',
     'examenes',
     'ordenes',
     'muestras',
     'resultados',
     'paquetes',
->>>>>>> backup-local
 ]
 
 MIDDLEWARE = [
@@ -97,11 +94,8 @@ DATABASES = {
         'NAME': 'LaboratorioAvanzadDB',
         'USER': 'sa',
         'PASSWORD': '1234',
-<<<<<<< HEAD
         'HOST': 'DESKTOP-NFDMETJ\\SQLEXPRESS',
-=======
         'HOST': 'DESKTOP-NFDMETJ\SQLEXPRESS',
->>>>>>> backup-local
         'PORT': '',
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
