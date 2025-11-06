@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.regexPatterns = {
+        nombre: "{{ form.get_regex_patterns.nombre|escapejs }}",
+        codigo: "{{ form.get_regex_patterns.codigo|escapejs }}"
+    };
+    window.errorMessages = {
+        nombre: "{{ form.get_error_messages.nombre|escapejs }}",
+        codigo: "{{ form.get_error_messages.codigo|escapejs }}",
+        precio: "{{ form.get_error_messages.precio|escapejs }}",
+        campo_vacio: "{{ form.get_error_messages.campo_vacio|escapejs }}",
+        seleccion_vacia: "{{ form.get_error_messages.seleccion_vacia|escapejs }}"
+    };
+</script>
+<script src="{% static 'examenes/js/examen_validaciones.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            
+            <form method="post" id="examenForm" novalidate>
+                {% csrf_token %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header text-white" style="background-color: #2A3F54;">
+                        <h3 class="text-center mb-0"><i class="fas fa-flask-vial me-2"></i>{{ titulo }}</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Información General</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8 mb-3">...{{ form.nombre }}...</div>
+                                            <div class="col-md-4 mb-3">...{{ form.codigo }}...</div>
+                                            <div class="col-md-6 mb-3">...{{ form.categoria }}...</div>
+                                            <div class="col-md-6 mb-3">...{{ form.tipo_muestra }}...</div>
+                                            <div class="col-md-6 mb-3">...{{ form.precio }}...</div>
+                                            <div class="col-md-6 mb-3">...{{ form.estado }}...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Acciones</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Guarda los cambios del examen o administra sus métodos y valores.</p>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-save me-2"></i>Guardar Cambios</button>
+                                            <a href="{% url 'examen_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Métodos</h5>
+                    <a href="{% url 'metodo_create' examen_pk=object.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Añadir Método
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for metodo in metodos_list %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {{ metodo.metodo }}
+                                {% if metodo.estado == 'Inactivo' %}
+                                    <span class="badge bg-danger ms-2">Inactivo</span>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'metodo_update' pk=metodo.pk %}" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-pen me-1"></i> Editar
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted text-center">No hay métodos registrados.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-ruler-combined me-2"></i>Valores de Referencia / Parámetros</h5>
+                    <a href="{% url 'valor_referencia_create' examen_pk=object.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Añadir Valor/Parámetro
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for valor in valores_list %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="me-2">{% if valor.poblacion %}{{ valor.poblacion }}:{% endif %}</strong>
+                                {{ valor.rango_referencia }} {{ valor.unidad_medida }}
+                                <span class="text-muted ms-2">({{ valor.get_tipo_resultado_display }})</span>
+                                {% if valor.estado == 'Inactivo' %}
+                                    <span class="badge bg-danger ms-2">Inactivo</span>
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'valor_referencia_update' pk=valor.pk %}" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-pen me-1"></i> Editar
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted text-center">No hay valores/parámetros registrados.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

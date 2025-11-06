@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-vial me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+                        {% if object %}
+                            <div class="mb-3">
+                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado de la Muestra</label>
+                                {{ form.estado }}
+                                <div class="text-danger small">{{ form.estado.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.codigo_barras.id_for_label }}" class="form-label fw-bold">Código de Barras</label>
+                                {{ form.codigo_barras }}
+                                <div class="text-danger small">{{ form.codigo_barras.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.observaciones.id_for_label }}" class="form-label fw-bold">Observaciones (Ej: Hemolizada)</label>
+                                {{ form.observaciones }}
+                                <div class="text-danger small">{{ form.observaciones.errors }}</div>
+                            </div>
+                        
+                        {% else %}
+                            <div class="mb-3">
+                                <label for="{{ form.tipo_muestra.id_for_label }}" class="form-label fw-bold">Tipo de Muestra a Registrar</label>
+                                {{ form.tipo_muestra }}
+                                <div class="text-danger small">{{ form.tipo_muestra.errors }}</div>
+                                {% if not form.fields.tipo_muestra.queryset.exists %}
+                                    <div class="alert alert-warning mt-2">
+                                        Todas las muestras requeridas para esta orden ya han sido registradas.
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.codigo_barras.id_for_label }}" class="form-label fw-bold">Código de Barras (Opcional)</label>
+                                {{ form.codigo_barras }}
+                                <div class="text-danger small">{{ form.codigo_barras.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.responsable_toma.id_for_label }}" class="form-label fw-bold">Responsable</label>
+                                {{ form.responsable_toma }}
+                                <div class="text-danger small">{{ form.responsable_toma.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.fecha_toma.id_for_label }}" class="form-label fw-bold">Fecha y Hora de Toma</label>
+                                {{ form.fecha_toma }}
+                                <div class="text-danger small">{{ form.fecha_toma.errors }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.observaciones.id_for_label }}" class="form-label fw-bold">Observaciones (Opcional)</label>
+                                {{ form.observaciones }}
+                                <div class="text-danger small">{{ form.observaciones.errors }}</div>
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'orden_update' pk=orden.pk %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver a la Orden</a>
+                            <button type="submit" class="btn btn-success" {% if not object and not form.fields.tipo_muestra.queryset.exists %}disabled{% endif %}>
+                                <i class="fas fa-save me-2"></i>Guardar Muestra
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

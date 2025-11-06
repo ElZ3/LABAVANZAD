@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pasar valores de Django al JS (Patrón de RolForm)
+    window.regexPatterns = {
+        username: "{{ form.get_regex_patterns.username|escapejs }}",
+        nombre: "{{ form.get_regex_patterns.nombre|escapejs }}",
+        apellido: "{{ form.get_regex_patterns.apellido|escapejs }}",
+        dui: "{{ form.get_regex_patterns.dui|escapejs }}",
+        email: "{{ form.get_regex_patterns.email }}"
+    };
+
+    window.errorMessages = {
+        username: "{{ form.get_error_messages.username|escapejs }}",
+        nombre: "{{ form.get_error_messages.nombre|escapejs }}",
+        apellido: "{{ form.get_error_messages.apellido|escapejs }}",
+        dui: "{{ form.get_error_messages.dui|escapejs }}",
+        campo_vacio: "{{ form.get_error_messages.campo_vacio|escapejs }}",
+        email_invalido: "{{ form.get_error_messages.email_invalido|escapejs }}"
+    };
+
+    window.serverErrors = [
+        {% if form.errors %}
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    "{{ error|escapejs }}",
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    ];
+</script>
+<script src="{% static 'usuarios/js/usuario_validaciones.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-user-plus me-2"></i>{{ titulo|default:"Gestión de Usuario" }}
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form method="post" id="usuarioForm" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-user-lock me-2"></i>Credenciales y Rol</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">Username</label>
+                                                {{ form.username }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">Correo Electrónico</label>
+                                                {{ form.email }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.rol.id_for_label }}" class="form-label fw-bold">Rol</label>
+                                                {{ form.rol }}
+                                                {% if form.rol.errors %}<div class="text-danger small">{{ form.rol.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                                {{ form.estado }}
+                                                {% if form.estado.errors %}<div class="text-danger small">{{ form.estado.errors }}</div>{% endif %}
+                                            </div>
+
+                                            {% if form.password %}
+                                            <hr class="my-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">{{ form.password.label }}</label>
+                                                <div class="input-group">
+                                                    {{ form.password }}
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="id_password1">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                {% if form.password.errors %}<div class="text-danger small">{{ form.password.errors }}</div>{% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">{{ form.password2.label }}</label>
+                                                <div class="input-group">
+                                                    {{ form.password2 }}
+                                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="id_password2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors }}</div>{% endif %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>Información Personal</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombres</label>
+                                                {{ form.nombre }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.apellido.id_for_label }}" class="form-label fw-bold">Apellidos</label>
+                                                {{ form.apellido }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.dui.id_for_label }}" class="form-label fw-bold">DUI</label>
+                                                {{ form.dui }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'user_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                    <button type="submit" class="btn btn-success" id="submitBtn">
+                                        <i class="fas fa-save me-2"></i>Guardar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Consejos de Registro</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="fw-bold"><i class="fas fa-user-shield text-warning me-2"></i>Seguridad</h6>
+                                        <ul class="ps-3 mb-3">
+                                            <li>El "Username" es único y se usa para iniciar sesión.</li>
+                                            <li>El "Correo" es único y también se puede usar para iniciar sesión.</li>
+                                        </ul>
+                                        <h6 class="fw-bold"><i class="fas fa-sitemap text-info me-2"></i>Permisos</h6>
+                                        <ul class="ps-3">
+                                            <li>El "Rol" determina el nivel de acceso del usuario en el sistema.</li>
+                                            <li>Un usuario en estado "Inactivo" no podrá iniciar sesión.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

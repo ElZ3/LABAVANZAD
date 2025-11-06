@@ -1,0 +1,17 @@
+    {% extends "base.html" %}
+    {% block title %}Mi Perfil{% endblock %}
+    {% block content %}
+    <h1>Perfil de {{ perfil.username }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Nombre:</strong> {{ perfil.nombre }}</p>
+            <p><strong>Apellido:</strong> {{ perfil.apellido }}</p>
+            <p><strong>Correo:</strong> {{ perfil.email }}</p>
+            <p><strong>DUI:</strong> {{ perfil.dui }}</p>
+            <p><strong>Rol:</strong> {{ perfil.rol.nombre }}</p>
+            <p><strong>Estado:</strong> {{ perfil.estado }}</p>
+            <a href="{% url 'profile_update' %}" class="btn btn-primary">Editar mi Perfil</a>
+        </div>
+    </div>
+    {% endblock %}
+    

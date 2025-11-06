@@ -1,0 +1,753 @@
+@charset "UTF-8";
+
+/* ========================================================================= */
+/* 1. Layout, Colores y Estructura Principal */
+/* ========================================================================= */
+body {
+  color: #73879C;
+  background: #F7F7F7;
+  font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.471;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  width: 100%;
+  padding: 0;
+  max-width: 100%;
+}
+
+.main_container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  flex-direction: column;
+}
+
+/* Columna Izquierda (Sidebar) */
+.left_col {
+  background: #2A3F54;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Columna Derecha (Contenido Principal) */
+body .container.body .right_col {
+  background: #F7F7F7;
+  min-height: 100vh;
+  flex-grow: 1;
+}
+
+/* Ajustes para el layout de 2 columnas (Nav MD - Desktop) */
+.nav-md .container.body .col-md-3.left_col {
+  min-height: 100vh;
+  width: 230px;
+  padding: 0;
+  position: fixed;
+  display: block;
+}
+
+.nav-md .container.body .right_col {
+  padding: 10px 20px 0;
+  margin-left: 230px;
+}
+
+/* Clases de utilidad */
+.pull-right { float: right !important; }
+.clearfix:after, .clearfix:before { content: " "; display: table; }
+.clearfix:after { clear: both; }
+
+/* ========================================================================= */
+/* 2. Sidebar (Columna Izquierda) */
+/* ========================================================================= */
+
+/* Titulo y Logo */
+.navbar.nav_title {
+  width: 230px;
+  float: left;
+  background: #2A3F54;
+  border-radius: 0;
+  height: 57px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.site_title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  font-weight: 400;
+  font-size: 22px;
+  color: #ECF0F1 !important;
+  text-decoration: none;
+  width: 100%;
+  height: 57px;
+  padding-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.site_title i {
+  border: 1px solid #EAEAEA;
+  padding: 5px 6px;
+  border-radius: 50%;
+}
+
+.site_title img {
+  width: 55px;
+  height: 55px;
+}
+
+/* Logo reducido al colapsar sidebar */
+.nav-sm .navbar.nav_title {
+  width: 70px;
+  justify-content: center;
+}
+
+.nav-sm .site_title {
+  justify-content: center;
+  padding-left: 0;
+}
+
+.nav-sm .site_title img {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-sm .site_title span {
+  display: none !important;
+}
+
+.profile_info { 
+  padding: 25px 10px 10px; 
+  width: 65%; 
+  float: left; 
+}
+
+.profile_info span { 
+  font-size: 13px; 
+  line-height: 30px; 
+  color: #BAB8B8; 
+}
+
+.profile_info h2 { 
+  font-size: 14px; 
+  color: #ECF0F1; 
+  margin: 0; 
+  font-weight: 300; 
+}
+
+.profile { 
+  padding: 0 10px; 
+}
+
+/* Centrar contenido del perfil en el sidebar */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 15px 10px;
+}
+
+.profile_info {
+  text-align: center;
+  width: 100%;
+  float: none;
+}
+
+.profile_info span {
+  display: block;
+  font-size: 14px;
+  color: #ECF0F1;
+}
+
+.profile_info h2 {
+  margin: 3px 0;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Secciones del Menu */
+.menu_section { 
+  margin-bottom: 35px; 
+}
+
+.menu_section h3 {
+  padding-left: 23px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: bold;
+  font-size: 11px;
+  margin-bottom: 0;
+  margin-top: 0;
+  text-shadow: 1px 1px #000;
+}
+
+.menu_section > ul { 
+  margin-top: 10px; 
+  display: block; 
+  padding: 0; 
+}
+
+/* Elementos del Menu */
+.nav.side-menu > li { 
+  position: relative; 
+  display: block; 
+  cursor: pointer; 
+  list-style: none; 
+}
+
+.nav.side-menu > li > a {
+  margin-bottom: 6px;
+  color: #E7E7E7;
+  font-weight: 500;
+  display: block;
+  padding: 13px 15px 12px;
+  text-decoration: none;
+}
+
+.nav.side-menu > li > a:hover { 
+  color: #F2F5F7 !important; 
+  background: transparent; 
+}
+
+.nav.side-menu li i { 
+  margin-right: 10px; 
+}
+
+.main_menu span.fa {
+  float: right;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 10px;
+  min-width: inherit;
+  color: #C4CFDA;
+}
+
+/* Submenu */
+.nav.child_menu { 
+  display: none; 
+  padding-left: 0; 
+}
+
+.nav.child_menu li { 
+  padding-left: 36px; 
+  list-style: none; 
+}
+
+.nav.child_menu li a {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
+  padding: 9px;
+  display: block;
+  text-decoration: none;
+}
+
+.nav.child_menu li:hover, 
+.nav.child_menu li.active { 
+  background-color: rgba(255, 255, 255, 0.06); 
+}
+
+/* Item Activo */
+.nav.side-menu > li.current-page, 
+.nav.side-menu > li.active { 
+  border-right: 5px solid #1ABB9C; 
+}
+
+.nav.side-menu > li.active > a {
+  text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
+  background: linear-gradient(#334556, #2C4257), #2A3F54;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0;
+}
+
+/* Footer del Sidebar */
+.sidebar-footer {
+  background: #2A3F54;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 8px 0;
+}
+
+.sidebar-footer a {
+  padding: 7px 0 3px 0;
+  text-align: center;
+  width: 25%;
+  float: left;
+  display: block;
+  color: #5A738E;
+  text-decoration: none;
+}
+
+.sidebar-footer a:hover { 
+  color: #fff; 
+}
+
+/* ========================================================================= */
+/* 3. Barra de Navegacion Superior (Top Nav) */
+/* ========================================================================= */
+.top_nav {
+  float: left;
+  background: #EDEDED;
+  border-bottom: 1px solid #D9DEE4;
+  margin-bottom: 10px;
+  width: auto;
+  position: relative;
+  height: 57px;
+}
+
+.nav_menu { 
+  float: left; 
+  width: 100%; 
+  background: #EDEDED;
+}
+
+/* Boton de Toggle */
+.nav_menu .nav.toggle { 
+  float: left; 
+  margin: 0; 
+  width: 70px; 
+}
+
+.nav_menu .nav.toggle a {
+  padding: 15px 15px 0;
+  margin: 0;
+  cursor: pointer;
+  color: #515356 !important;
+  text-decoration: none;
+}
+
+.nav_menu .nav.toggle a i { 
+  font-size: 26px; 
+}
+
+/* Elementos de la Derecha */
+.top_nav .navbar-right {
+  margin: 13px;
+  width: auto;
+  float: right;
+  list-style: none;
+  padding: 0;
+}
+
+.top_nav .navbar-right li { 
+  display: inline-block; 
+  float: right; 
+  position: relative; 
+}
+
+.top_nav .navbar-nav > li > a {
+  color: #515356 !important;
+  font-weight: 500;
+  line-height: 32px;
+  padding: 10px 15px;
+  text-decoration: none;
+}
+
+/* Contenedor del perfil (usuario) */
+.top_nav .navbar-right .user-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #515356 !important;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.top_nav .navbar-right .user-profile:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+/* Imagen de usuario */
+.top_nav .navbar-right .user-profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0;
+}
+
+/* Nombre de usuario */
+.top_nav .navbar-right .user-profile span,
+.top_nav .navbar-right .user-profile {
+  font-size: 14px;
+  color: #515356 !important;
+}
+
+/* Campanita (Notificaciones) */
+.info-number {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #515356;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.info-number:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+/* Badge (contador de notificaciones) */
+.info-number .badge {
+  position: absolute;
+  top: 1px;
+  right: 11px;
+  background-color: #1ABB9C !important;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 14px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  text-align: center;
+  padding: 0;
+}
+
+/* Dropdown de notificaciones */
+.msg_list {
+  min-width: 250px;
+}
+
+.msg_list .text-center {
+  padding: 5px 10px;
+  border-top: 1px solid #E6E9ED;
+}
+
+.msg_list .text-center a {
+  font-weight: 600;
+  color: #337ab7;
+}
+
+/* Badge: Estilos comunes consolidados */
+.dropdown-usermenu .badge, 
+.info-number .badge {
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 13px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+.bg-red { 
+  background: #E74C3C !important; 
+  color: #fff; 
+}
+
+/* ========================================================================= */
+/* 4. Footer y Utilidades de Contenido */
+/* ========================================================================= */
+footer {
+  background: #fff;
+  padding: 10px 20px;
+  display: block;
+  margin-left: 230px;
+}
+
+.nav-sm footer {
+  margin-left: 70px;
+}
+
+/* Ajuste para top_nav y sidebar (Nav MD) */
+.nav-md .top_nav {
+  position: fixed;
+  top: 0;
+  left: 230px;
+  right: 0;
+  height: 57px;
+  width: calc(100% - 230px);
+  background: #EDEDED;
+  z-index: 2;
+}
+
+.nav-md .right_col {
+  margin-left: 230px;
+  margin-top: 57px;
+  padding: 20px;
+  background: #F7F7F7;
+}
+
+/* ========================================================================= */
+/* 5. Ajustes para Sidebar Colapsable (nav-sm) */
+/* ========================================================================= */
+
+/* Sidebar colapsado (modo nav-sm) */
+.nav-sm .left_col {
+  width: 70px;
+}
+
+.nav-sm .right_col,
+.nav-sm .top_nav,
+.nav-sm footer {
+  margin-left: 70px;
+}
+
+/* Ocultar elementos innecesarios en modo colapsado */
+.nav-sm .site_title span,
+.nav-sm .profile_info,
+.nav-sm .menu_section h3,
+.nav-sm .main_menu span.fa,
+.nav-sm .sidebar-footer.hidden-small {
+  display: none !important;
+}
+
+.nav-sm .navbar.nav_title {
+  width: 70px;
+}
+
+.nav-sm .nav.side-menu li a {
+  text-align: center !important;
+  font-size: 10px;
+  padding: 10px 5px;
+  height: 60px;
+}
+
+.nav-sm .nav.side-menu li a i {
+  font-size: 20px !important;
+  width: 100% !important;
+  margin-bottom: 3px;
+  margin-right: 0;
+}
+
+/* Submenus flotantes al colapsar */
+.nav-sm ul.nav.child_menu {
+  position: absolute;
+  left: 70px;
+  top: 0;
+  width: 200px;
+  background: #3E5367;
+  display: none;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+/* ========================================================================= */
+/* 6. Estados Activos y Navegación */
+/* ========================================================================= */
+
+/* Item de menú activo - Línea verde lateral */
+.nav.side-menu > li.current-page, 
+.nav.side-menu > li.active {
+    border-right: 5px solid #1ABB9C;
+}
+
+/* Fondo para item activo */
+.nav.side-menu > li.active > a {
+    text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
+    background: linear-gradient(#334556, #2C4257), #2A3F54;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0;
+    color: #F2F5F7 !important;
+}
+
+/* Submenú activo */
+.nav.child_menu li.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav.child_menu li.active a {
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* ========================================================================= */
+/* 7. Sistema de Notificaciones */
+/* ========================================================================= */
+/* Mejoras para las notificaciones - VERSIÓN CORREGIDA */
+.notification-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    min-width: 300px;
+}
+
+.notification {
+    display: flex;
+    align-items: flex-start;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid;
+    animation: slideInRight 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification.fade-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.notification.fade-out {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+
+.notification-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #7f8c8d;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #2c3e50;
+}
+
+/* Colores y estilos para cada tipo de notificación */
+.notification.alert-success {
+    border-left-color: #27ae60;
+    background: linear-gradient(135deg, #f0f9f4 0%, #ffffff 100%);
+}
+
+.notification.alert-success .notification-icon {
+    color: #27ae60;
+}
+
+.notification.alert-error,
+.notification.alert-danger {
+    border-left-color: #e74c3c;
+    background: linear-gradient(135deg, #fdf0ef 0%, #ffffff 100%);
+}
+
+.notification.alert-error .notification-icon,
+.notification.alert-danger .notification-icon {
+    color: #e74c3c;
+}
+
+.notification.alert-warning {
+    border-left-color: #f39c12;
+    background: linear-gradient(135deg, #fef5e7 0%, #ffffff 100%);
+}
+
+.notification.alert-warning .notification-icon {
+    color: #f39c12;
+}
+
+.notification.alert-info {
+    border-left-color: #3498db;
+    background: linear-gradient(135deg, #e8f4fd 0%, #ffffff 100%);
+}
+
+.notification.alert-info .notification-icon {
+    color: #3498db;
+}
+
+/* Animaciones corregidas */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Barra de progreso para indicar tiempo restante */
+.notification::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: currentColor;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: progress 5s linear forwards;
+    opacity: 0.3;
+}
+
+@keyframes progress {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* Ajustar duración de la barra según el tipo */
+.notification.alert-success::after { animation-duration: 4s; }
+.notification.alert-error::after,
+.notification.alert-danger::after { animation-duration: 6s; }
+.notification.alert-warning::after { animation-duration: 5s; }
+.notification.alert-info::after { animation-duration: 4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notification-container {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification {
+        min-width: auto;
+    }
+}

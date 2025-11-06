@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            
+            <form method="post" id="ordenUpdateForm" action="{% url 'orden_update' pk=object.pk %}">
+                {% csrf_token %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header text-white" style="background-color: #2A3F54;">
+                        <h3 class="text-center mb-0"><i class="fas fa-edit me-2"></i>{{ titulo }}</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h5>Paciente:</h5>
+                                <p class="lead">{{ object.paciente|default:"N/A" }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Convenio:</h5>
+                                <p class="lead">{{ object.convenio.nombre|default:"Cliente Privado" }}</p>
+                            </div>
+                        </div>
+                        <div class="row border-top pt-3">
+                            <div class="col-md-4 mb-3">{{ form.estado.label_tag }} {{ form.estado }}</div>
+                            <div class="col-md-4 mb-3">{{ form.prioridad.label_tag }} {{ form.prioridad }}</div>
+                            <div class="col-md-4 mb-3">{{ form.metodo_entrega.label_tag }} {{ form.metodo_entrega }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <a href="{% url 'orden_lista' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                            <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-save me-2"></i>Actualizar Estado/Prioridad</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-vial me-2"></i>Gestión de Muestras</h5>
+                    <a href="{% url 'muestra_create' orden_pk=object.pk %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Registrar Muestra Tomada
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for muestra in object.muestras_registradas.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="me-2">{{ muestra.tipo_muestra.nombre }}</strong>
+                                <span class="text-muted small">(ID: {{ muestra.muestra_id }})</span>
+                                {% if muestra.codigo_barras %}
+                                    <span class="badge bg-light text-dark border ms-2">#{{ muestra.codigo_barras }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge 
+                                    {% if muestra.estado == 'Recepcionada' %}bg-primary
+                                    {% elif muestra.estado == 'Rechazada' %}bg-danger
+                                    {% else %}bg-success{% endif %} me-3">
+                                    {{ muestra.estado }}
+                                </span>
+                                <a href="{% url 'muestra_update' pk=muestra.pk %}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-pen me-1"></i> Actualizar Estado
+                                </a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted text-center">
+                            Aún no se han registrado muestras (toma de muestra) para esta orden.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Exámenes y Paquetes en la Orden</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for item in items_examen %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="me-2">{{ item.examen.nombre }}</strong>
+                                <span class="text-muted">({{ item.examen.codigo }})</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="fw-bold me-3">$ {{ item.precio_en_orden|floatformat:2 }}</span>
+                                <form method="post" action="{% url 'orden_remove_examen' orden_pk=object.pk examen_pk=item.examen.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt me-1"></i> Quitar
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        
+                        {% for item in items_paquete %}
+                        <li class_("list-group-item d-flex justify-content-between align-items-center bg-light">
+                            <div>
+                                <strong class="me-2"><i class="fas fa-box-open me-1"></i> {{ item.paquete.nombre }}</strong>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="fw-bold me-3">$ {{ item.precio_en_orden|floatformat:2 }}</span>
+                                <form method="post" action="{% url 'orden_remove_paquete' orden_pk=object.pk paquete_pk=item.paquete.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt me-1"></i> Quitar
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                        {% endfor %}
+
+                        {% if not items_examen and not items_paquete %}
+                        <li class="list-group-item text-muted text-center">No hay ítems en esta orden.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="row text-end">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <h6 class="mb-1">Subtotal: <span class="float-end">$ {{ object.subtotal|floatformat:2 }}</span></h6>
+                            <h6 class="mb-1 text-danger">Descuento: <span class_("float-end">- $ {{ object.descuento_aplicado|floatformat:2 }}</span></h6>
+                            <hr class="my-1">
+                            <h5 class="mb-0 fw-bold">Total: <span class="float-end">$ {{ object.total_pagado|floatformat:2 }}</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-search-plus me-2"></i>Añadir Exámenes o Paquetes</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o código..." value="{{ search_query|default:'' }}">
+                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i> Buscar</button>
+                        </div>
+                    </form>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Exámenes Disponibles</h6>
+                            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+                                {% for examen in examenes_disponibles %}
+                                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ examen.nombre }}</strong> ({{ examen.codigo }})
+                                        <small class="d-block text-muted">$ {{ examen.precio|floatformat:2 }}</small>
+                                    </div>
+                                    <form method="post" action="{% url 'orden_add_examen' orden_pk=object.pk %}">
+                                        {% csrf_token %}
+                                        {{ add_examen_form.examen_id.as_hidden }}
+                                        <input type="hidden" name="examen_id" value="{{ examen.pk }}">
+                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus"></i></button>
+                                    </form>
+                                </div>
+                                {% empty %}
+                                    <div class="list-group-item text-muted">No se encontraron exámenes.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Paquetes Disponibles</h6>
+                            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
+                                {% for paquete in paquetes_disponibles %}
+                                 <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ paquete.nombre }}</strong>
+                                        <small class="d-block text-muted">$ {{ paquete.precio|floatformat:2 }}</small>
+                                    </div>
+                                    <form method="post" action="{% url 'orden_add_paquete' orden_pk=object.pk %}">
+                                        {% csrf_token %}
+                                        {{ add_paquete_form.paquete_id.as_hidden }}
+                                        <input type="hidden" name="paquete_id" value="{{ paquete.pk }}">
+                                        <button type="submit" class="btn btn-info btn-sm text-white"><i class="fas fa-plus"></i></button>
+                                    </form>
+                                </div>
+                                {% empty %}
+                                    <div class="list-group-item text-muted">No se encontraron paquetes.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

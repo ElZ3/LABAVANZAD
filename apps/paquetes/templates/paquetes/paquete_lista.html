@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block title %}Gestión de Paquetes{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-12"> 
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h1 class="text-dark fw-bold"><i class="fas fa-box me-2"></i>Gestión de Paquetes</h1>
+                <a href="{% url 'paquetes:paquete_create' %}" class="btn btn-success btn-lg shadow-sm">
+                    <i class="fas fa-plus-circle me-2"></i>Registrar Nuevo Paquete
+                </a>
+            </div>
+            <p class="text-muted mb-4">Administre los paquetes o perfiles de exámenes disponibles en el sistema.</p>
+            
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="mb-0"><i class="fas fa-boxes me-2"></i>Listado de Paquetes</h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Barra de búsqueda -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-search"></i></span>
+                                <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Buscar paquetes...">
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-1"></i>Filtrar por Estado
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item filter-estado" href="#" data-estado="todos">Todos los estados</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-estado" href="#" data-estado="Activo">Solo Activos</a></li>
+                                    <li><a class="dropdown-item filter-estado" href="#" data-estado="Inactivo">Solo Inactivos</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de paquetes -->
+                    <div class="table-responsive">
+                        <table id="tablaPaquetes" class="table table-striped table-hover align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 5%;">#</th>
+                                    <th scope="col" style="width: 20%;">Nombre</th>
+                                    <th scope="col" style="width: 25%;">Descripción</th>
+                                    <th scope="col" class="text-center" style="width: 10%;">Precio</th>
+                                    <th scope="col" class="text-center" style="width: 10%;">Exámenes</th>
+                                    <th scope="col" class="text-center" style="width: 10%;">Estado</th>
+                                    <th scope="col" class="text-center" style="width: 10%;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for paquete in paquetes %}
+                                <tr class="fila-paquete" data-estado="{{ paquete.estado|lower }}">
+                                    <td class="text-center fw-bold text-muted">{{ forloop.counter }}</td>
+                                    <td class="fw-bold">{{ paquete.nombre }}</td>
+                                    <td class="text-muted small">
+                                        {% if paquete.descripcion %}
+                                            {{ paquete.descripcion|truncatewords:10 }}
+                                        {% else %}
+                                            <span class="text-muted fst-italic">Sin descripción</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center fw-bold text-success">$ {{ paquete.precio|floatformat:2 }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary rounded-pill">{{ paquete.examenes.count }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if paquete.estado == 'Activo' %}
+                                            <span class="badge bg-success rounded-pill">
+                                                <i class="fas fa-check-circle me-1"></i>Activo
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger rounded-pill">
+                                                <i class="fas fa-times-circle me-1"></i>Inactivo
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-cog"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                <li>
+                                                    <a class="dropdown-item text-info" href="{% url 'paquetes:paquete_detail' paquete.pk %}">
+                                                        <i class="fas fa-eye me-2"></i>Ver Detalles
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-warning" href="{% url 'paquetes:paquete_update' paquete.pk %}">
+                                                        <i class="fas fa-edit me-2"></i>Editar
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    {% if paquete.estado == 'Activo' %}
+                                                        <a class="dropdown-item text-secondary" href="#">
+                                                            <i class="fas fa-pause me-2"></i>Desactivar
+                                                        </a>
+                                                    {% else %}
+                                                        <a class="dropdown-item text-success" href="#">
+                                                            <i class="fas fa-play me-2"></i>Activar
+                                                        </a>
+                                                    {% endif %}
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete-btn" 
+                                                       href="{% url 'paquetes:paquete_delete' paquete.pk %}" 
+                                                       data-nombre="{{ paquete.nombre }}"
+                                                       data-estado="{{ paquete.estado }}">
+                                                        <i class="fas fa-trash me-2"></i>Eliminar
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-box-open fa-2x mb-3"></i>
+                                            <p class="mb-0">No hay paquetes registrados.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Estadísticas -->
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center py-3">
+                                    <h4 class="text-primary mb-1">{{ paquetes.count }}</h4>
+                                    <small class="text-muted">Total de Paquetes</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center py-3">
+                                    <h4 class="text-success mb-1">{{ paquetes|length|default:0 }}</h4>
+                                    <small class="text-muted">Paquetes Activos</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center py-3">
+                                    <h4 class="text-danger mb-1">0</h4>
+                                    <small class="text-muted">Paquetes Inactivos</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'paquetes/js/paquete_list.js' %}"></script>
+{% endblock %}

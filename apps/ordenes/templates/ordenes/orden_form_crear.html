@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'ordenes/js/orden_validaciones.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-plus me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="ordenCreateForm">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+                        <div class="alert alert-info">
+                            <strong>Paso 1:</strong> Seleccione el paciente, convenio (si aplica) y la prioridad.
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.paciente.id_for_label }}" class="form-label fw-bold">Paciente</label>
+                            {{ form.paciente }}
+                            <div class="text-danger small">{{ form.paciente.errors }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.convenio.id_for_label }}" class="form-label fw-bold">Convenio</label>
+                            {{ form.convenio }}
+                            <div class="text-danger small">{{ form.convenio.errors }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.prioridad.id_for_label }}" class="form-label fw-bold">Prioridad</label>
+                                {{ form.prioridad }}
+                                <div class="text-danger small">{{ form.prioridad.errors }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.metodo_entrega.id_for_label }}" class="form-label fw-bold">Método de Entrega</label>
+                                {{ form.metodo_entrega }}
+                                <div class="text-danger small">{{ form.metodo_entrega.errors }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'orden_lista' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Cancelar</a>
+                            <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-save me-2"></i>Guardar y Añadir Exámenes (Paso 2)</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

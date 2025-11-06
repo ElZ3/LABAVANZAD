@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block title %}Gestión de Exámenes{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-12"> 
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h1 class="text-dark fw-bold">
+                    <i class="fa-solid fa-flask-vial me-2" style="color: #2A3F54;"></i> Gestión de Exámenes
+                </h1>
+                <a href="{% url 'examen_create' %}" class="btn btn-success btn-lg shadow-sm">
+                    <i class="fa-solid fa-plus me-1"></i> Registrar Nuevo Examen
+                </a>
+            </div>
+
+            <p class="text-muted mb-4">Administra todos los exámenes de laboratorio, sus precios, métodos y valores de referencia.</p>
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="mb-0"><i class="fas fa-microscope me-2"></i>Listado de Exámenes</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group input-group-sm border rounded-pill shadow-sm">
+                                <span class="input-group-text bg-white border-0 ps-3 rounded-start-pill" id="search-icon">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-0 pe-3 rounded-end-pill" id="searchInput" placeholder="Buscar por nombre o código...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="tablaExamenes" class="table table-striped table-hover align-middle w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="py-3" style="width: 30%;">Nombre</th>
+                                    <th scope="col" class="py-3" style="width: 10%;">Código</th>
+                                    <th scope="col" class="py-3" style="width: 20%;">Categoría</th>
+                                    <th scope="col" class="py-3" style="width: 15%;">Tipo de Muestra</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 10%;">Precio</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 5%;">Estado</th>
+                                    <th scope="col" class="py-3 text-center" style="width: 10%;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for examen in examenes %}
+                                <tr>
+                                    <td class="fw-bold">{{ examen.nombre }}</td>
+                                    <td class="text-muted small">{{ examen.codigo }}</td>
+                                    <td class="text-muted small">{{ examen.categoria.nombre|default:"N/A" }}</td>
+                                    <td class_("text-muted small">{{ examen.tipo_muestra.nombre|default:"N/A" }}</td>
+                                    <td class="text-center fw-bold">$ {{ examen.precio|floatformat:2 }}</td>
+                                    <td class="text-center">
+                                        {% if examen.estado == 'Activo' %}
+                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3 py-1">
+                                                <i class="fa-solid fa-circle-check me-1"></i> Activo
+                                            </span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger px-3 py-1">
+                                                <i class="fa-solid fa-circle-xmark me-1"></i> Inactivo
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-cog me-1"></i> Acciones
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                <li>
+                                                    <a class="dropdown-item text-warning" href="{% url 'examen_update' examen.pk %}">
+                                                        <i class="fa-solid fa-pen-to-square fa-fw me-2"></i> Editar
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete-btn" 
+                                                       href="{% url 'examen_delete' examen.pk %}"
+                                                       data-nombre="{{ examen.nombre }}">
+                                                        <i class="fa-solid fa-trash-can fa-fw me-2"></i> Eliminar
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="fas fa-box-open fa-2x text-muted mb-2"></i>
+                                        <p class="mb-0 text-muted">No hay exámenes registrados. ¡Empieza a crear uno!</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'examenes/js/examen_list.js' %}"></script>
+{% endblock %}

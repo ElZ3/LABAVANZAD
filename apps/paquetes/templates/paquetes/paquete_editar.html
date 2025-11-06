@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.regexPatterns = {
+        nombre: "{{ form.get_regex_patterns.nombre|escapejs }}",
+    };
+    window.errorMessages = {
+        nombre: "{{ form.get_error_messages.nombre|escapejs }}",
+        precio: "{{ form.get_error_messages.precio|escapejs }}",
+        campo_vacio: "{{ form.get_error_messages.campo_vacio|escapejs }}",
+    };
+</script>
+<script src="{% static 'paquetes/js/paquete_validaciones.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-box me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form method="post" id="paqueteForm" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información del Paquete</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label fw-bold">Nombre del Paquete</label>
+                                                {{ form.nombre }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label for="{{ form.descripcion.id_for_label }}" class="form-label fw-bold">Descripción</label>
+                                                {{ form.descripcion }}
+                                                <div class="form-text text-muted">Descripción opcional del paquete.</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.precio.id_for_label }}" class="form-label fw-bold">Precio ($)</label>
+                                                {{ form.precio }}
+                                                <div class="valid-feedback">✓ Campo válido</div>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                                {{ form.estado }}
+                                                <div class="invalid-feedback d-block">{{ form.estado.errors }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="fas fa-flask-vial me-2"></i>Exámenes Incluidos</h5>
+                                        {% if examenes_detalle %}
+                                        <span class="badge bg-primary">{{ examenes_detalle|length }} exámenes</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="{{ form.examenes.id_for_label }}" class="form-label fw-bold">Seleccionar Exámenes</label>
+                                            {{ form.examenes }}
+                                            <div class="invalid-feedback d-block">{{ form.examenes.errors }}</div>
+                                            <div class="form-text text-muted">
+                                                {{ form.examenes.help_text }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Resumen de exámenes seleccionados -->
+                                        <div id="resumenExamenes" class="mt-3 p-3 bg-light rounded d-none">
+                                            <h6 class="fw-bold mb-2">Exámenes seleccionados:</h6>
+                                            <div id="listaExamenes" class="small"></div>
+                                        </div>
+
+                                        <!-- Gestión detallada de exámenes (solo en edición) -->
+                                        {% if examenes_detalle %}
+                                        <div class="mt-4">
+                                            <h6 class="fw-bold mb-3">Configuración de Exámenes en el Paquete:</h6>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>Examen</th>
+                                                            <th width="100">Orden</th>
+                                                            <th width="120">Estado</th>
+                                                            <th width="100">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for detalle in examenes_detalle %}
+                                                        <tr>
+                                                            <td>
+                                                                <strong>{{ detalle.examen.nombre }}</strong>
+                                                                <br>
+                                                                <small class="text-muted">{{ detalle.examen.codigo }}</small>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-secondary">{{ detalle.orden }}</span>
+                                                            </td>
+                                                            <td>
+                                                                {% if detalle.estado == 'Activo' %}
+                                                                    <span class="badge bg-success">Activo</span>
+                                                                {% else %}
+                                                                    <span class="badge bg-danger">Inactivo</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <a href="{% url 'paquetes:paquete_examen_update' detalle.pk %}" 
+                                                                   class="btn btn-outline-warning btn-sm" 
+                                                                   title="Editar configuración">
+                                                                    <i class="fas fa-cog"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{% url 'paquetes:paquete_list' %}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                                    </a>
+                                    <button type="submit" class="btn btn-success" id="submitBtn">
+                                        <i class="fas fa-save me-2"></i>Guardar Paquete
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card sticky-top" style="top: 20px;">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Información</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="small mb-3">
+                                            <strong>Paquetes/Perfiles:</strong> Son conjuntos de exámenes que se ofrecen como un solo servicio.
+                                        </p>
+                                        <p class="small mb-3">
+                                            <strong>Precio:</strong> Establezca un precio competitivo para el paquete completo.
+                                        </p>
+                                        <p class="small mb-3">
+                                            <strong>Estado por Examen:</strong> Cada examen dentro del paquete puede tener su propio estado.
+                                        </p>
+                                        <p class="small mb-0">
+                                            <strong>Orden:</strong> Define el orden de aparición de los exámenes en reportes.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

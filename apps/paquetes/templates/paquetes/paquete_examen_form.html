@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-cog me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Información del examen y paquete -->
+                    <div class="card mb-4 border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-2">Examen:</h6>
+                            <p class="mb-2">{{ examen.nombre }} <small class="text-muted">({{ examen.codigo }})</small></p>
+                            
+                            <h6 class="fw-bold mb-2">Paquete:</h6>
+                            <p class="mb-0">{{ paquete.nombre }}</p>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.orden.id_for_label }}" class="form-label fw-bold">{{ form.orden.label }}</label>
+                                {{ form.orden }}
+                                <div class="form-text">Define el orden de aparición en reportes (0 = primero).</div>
+                                <div class="text-danger small">{{ form.orden.errors }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">{{ form.estado.label }}</label>
+                                {{ form.estado }}
+                                <div class="text-danger small">{{ form.estado.errors }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'paquetes:paquete_update' pk=paquete.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Paquete
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Guardar Configuración
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
