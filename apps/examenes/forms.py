@@ -77,14 +77,16 @@ class MetodoExamenForm(forms.ModelForm):
 # --- Formulario 3: Valores de Referencia (Hijo) ---
 
 class ValorReferenciaForm(forms.ModelForm):
-    """ Formulario simple para el modelo hijo ValorReferencia. """
     class Meta:
         model = ValorReferencia
-        fields = ['poblacion', 'rango_referencia', 'unidad_medida', 'tipo_resultado', 'estado']
+        # Quitamos 'poblacion', agregamos sexo y edades
+        fields = ['sexo', 'edad_minima', 'edad_maxima', 'rango_referencia', 'unidad_medida', 'tipo_resultado', 'estado']
         widgets = {
-            'poblacion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Hombres (Opcional)'}),
-            'rango_referencia': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 120-200 o Negativo'}),
-            'unidad_medida': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: mg/dL (Opcional)'}),
-            'tipo_resultado': forms.Select(attrs={'class': 'form-select'}),
-            'estado': forms.Select(attrs={'class': 'form-select'}),
+            'sexo': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'edad_minima': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': '0'}),
+            'edad_maxima': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': '120'}),
+            'rango_referencia': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Ej: 70-110'}),
+            'unidad_medida': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Ej: mg/dL'}),
+            'tipo_resultado': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+            'estado': forms.Select(attrs={'class': 'form-select form-select-sm'}),
         }

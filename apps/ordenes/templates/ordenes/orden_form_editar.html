@@ -1,202 +1,584 @@
 {% extends "base.html" %}
 {% load static %}
-
 {% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            
-            <form method="post" id="ordenUpdateForm" action="{% url 'orden_update' pk=object.pk %}">
-                {% csrf_token %}
+    <div class="row">
+        
+        <!-- COLUMNA IZQUIERDA - DATOS SELECCIONADOS/RESUMEN -->
+        <div class="col-xl-4">
+            <div class="sticky-top" style="top: 20px; z-index: 100;">
+
+                <!-- Resumen de la Orden -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header text-white" style="background-color: #2A3F54;">
-                        <h3 class="text-center mb-0"><i class="fas fa-edit me-2"></i>{{ titulo }}</h3>
+                        <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Resumen de la Orden</h5>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <h5>Paciente:</h5>
-                                <p class="lead">{{ object.paciente|default:"N/A" }}</p>
+                    <div class="card-body">
+                        <!-- Información del Paciente -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-user me-2"></i>Paciente Seleccionado
+                            </h6>
+                            <div class="border rounded p-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h5 class="text-success mb-1">{{ object.paciente|default:"N/A" }}</h5>
+                                        {% if object.paciente.dui %}
+                                        <p class="mb-0 text-muted"><strong>DUI:</strong> {{ object.paciente.dui }}</p>
+                                        {% endif %}
+                                        <span class="badge bg-success mt-2">
+                                            <i class="fas fa-check-circle me-1"></i>Seleccionado
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h5>Convenio:</h5>
-                                <p class="lead">{{ object.convenio.nombre|default:"Cliente Privado" }}</p>
-                            </div>
                         </div>
-                        <div class="row border-top pt-3">
-                            <div class="col-md-4 mb-3">{{ form.estado.label_tag }} {{ form.estado }}</div>
-                            <div class="col-md-4 mb-3">{{ form.prioridad.label_tag }} {{ form.prioridad }}</div>
-                            <div class="col-md-4 mb-3">{{ form.metodo_entrega.label_tag }} {{ form.metodo_entrega }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <a href="{% url 'orden_lista' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
-                            <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-save me-2"></i>Actualizar Estado/Prioridad</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-vial me-2"></i>Gestión de Muestras</h5>
-                    <a href="{% url 'muestra_create' orden_pk=object.pk %}" class="btn btn-primary btn-sm">
-                        <i class="fas fa-plus me-1"></i> Registrar Muestra Tomada
-                    </a>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        {% for muestra in object.muestras_registradas.all %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong class="me-2">{{ muestra.tipo_muestra.nombre }}</strong>
-                                <span class="text-muted small">(ID: {{ muestra.muestra_id }})</span>
-                                {% if muestra.codigo_barras %}
-                                    <span class="badge bg-light text-dark border ms-2">#{{ muestra.codigo_barras }}</span>
+                        <!-- Información del Convenio -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-handshake me-2"></i>Convenio Seleccionado
+                            </h6>
+                            <div class="border rounded p-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h5 class="text-success mb-1">{{ object.convenio.nombre|default:"Cliente Privado" }}</h5>
+                                        {% if object.convenio.codigo %}
+                                        <p class="mb-0 text-muted"><strong>Código:</strong> {{ object.convenio.codigo }}</p>
+                                        {% endif %}
+                                        <span class="badge bg-success mt-2">
+                                            <i class="fas fa-check-circle me-1"></i>Seleccionado
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración Actual -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-cog me-2"></i>Configuración Actual
+                            </h6>
+                            <div class="border rounded p-3">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <strong>Estado:</strong>
+                                        <span class="badge bg-primary float-end">{{ object.get_estado_display }}</span>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <strong>Prioridad:</strong>
+                                        <span class="badge bg-warning text-dark float-end">{{ object.get_prioridad_display }}</span>
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>Método Entrega:</strong>
+                                        <span class="badge bg-info float-end">{{ object.get_metodo_entrega_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Items en la Orden -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-list-check me-2"></i>Items en la Orden
+                            </h6>
+                            <div class="border rounded">
+                                <!-- Exámenes -->
+                                {% if items_examen %}
+                                <div class="p-3 border-bottom">
+                                    <h6 class="text-success mb-2">
+                                        <i class="fas fa-microscope me-1"></i>Exámenes ({{ items_examen|length }})
+                                    </h6>
+                                    {% for item in items_examen %}
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="small">{{ item.examen.nombre }}</span>
+                                        <span class="badge bg-secondary">${{ item.precio_en_orden|floatformat:2 }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Paquetes -->
+                                {% if items_paquete %}
+                                <div class="p-3">
+                                    <h6 class="text-info mb-2">
+                                        <i class="fas fa-box-open me-1"></i>Paquetes ({{ items_paquete|length }})
+                                    </h6>
+                                    {% for item in items_paquete %}
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="small">{{ item.paquete.nombre }}</span>
+                                        <span class="badge bg-secondary">${{ item.precio_en_orden|floatformat:2 }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                {% if not items_examen and not items_paquete %}
+                                <div class="p-3 text-center text-muted">
+                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                    <p class="mb-0">No hay items en la orden</p>
+                                </div>
                                 {% endif %}
                             </div>
-                            <div class="d-flex align-items-center">
-                                <span class="badge 
-                                    {% if muestra.estado == 'Recepcionada' %}bg-primary
-                                    {% elif muestra.estado == 'Rechazada' %}bg-danger
-                                    {% else %}bg-success{% endif %} me-3">
-                                    {{ muestra.estado }}
-                                </span>
-                                <a href="{% url 'muestra_update' pk=muestra.pk %}" class="btn btn-outline-warning btn-sm">
-                                    <i class="fas fa-pen me-1"></i> Actualizar Estado
-                                </a>
+                        </div>
+
+                        <!-- Resumen Financiero -->
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-chart-bar me-2"></i>Resumen Financiero
+                            </h6>
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <strong>$ {{ object.subtotal|floatformat:2 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-danger">
+                                    <span>Descuento:</span>
+                                    <strong>- $ {{ object.descuento_aplicado|floatformat:2 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>IVA (13%):</span>
+                                    <strong>$ {{ object.iva|floatformat:2 }}</strong>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <strong>Total:</strong>
+                                    <strong class="text-primary">$ {{ object.total_con_iva|floatformat:2 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-success">
+                                    <span>Pagado:</span>
+                                    <strong>$ {{ object.monto_pagado|floatformat:2 }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-danger">
+                                    <span>Pendiente:</span>
+                                    <strong>$ {{ saldo_pendiente|floatformat:2 }}</strong>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <span class="badge bg-{% if object.estado_pago == 'PAGADO' %}success{% elif object.estado_pago == 'PARCIAL' %}warning{% else %}danger{% endif %}">
+                                        {{ object.get_estado_pago_display }}
+                                    </span>
+                                </div>
                             </div>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item text-muted text-center">
-                            Aún no se han registrado muestras (toma de muestra) para esta orden.
-                        </li>
-                        {% endfor %}
-                    </ul>
+                        </div>
+
+                        <!-- Acciones Rápidas -->
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'orden_lista' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                            </a>
+                            {% if not object.factura %}
+                            <a href="{% url 'factura_create' orden_pk=object.pk %}" class="btn btn-warning">
+                                <i class="fas fa-file-invoice me-2"></i>Generar Factura
+                            </a>
+                            {% else %}
+                            <a href="{% url 'factura_detalle' pk=object.factura.pk %}" class="btn btn-primary">
+                                <i class="fas fa-print me-2"></i>Ver Factura
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                  <!-- SECCIÓN DE RESULTADOS AGREGADA AQUÍ -->
+                        <div class="card shadow-sm mb-4 mt-4">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Resultados</h5>
+                                
+                                <div class="btn-group">
+                                    {% if object.resultado %}
+                                        <a href="{% url 'resultado_ingreso' orden_pk=object.pk %}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit me-1"></i> 
+                                            {% if object.resultado.estado == 'Validado' %}
+                                                Ver Datos
+                                            {% else %}
+                                                Gestionar
+                                            {% endif %}
+                                        </a>
+                                        
+                                        <a href="{% url 'orden_imprimir_resultados' pk=object.pk %}" target="_blank" class="btn btn-dark btn-sm ms-1">
+                                            <i class="fas fa-print me-1"></i> Imprimir
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'resultado_ingreso' orden_pk=object.pk %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus me-1"></i> Iniciar Ingreso
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% if object.resultado %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Estado:</strong>
+                                            {% if object.resultado.estado == 'Validado' %}
+                                                <span class="badge bg-success">Validado</span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Validado por:</strong>
+                                            {{ object.resultado.validado_por.username|default:"-" }}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Fecha:</strong>
+                                            {{ object.resultado.fecha_validacion|date:"d/m/Y"|default:"-" }}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted text-center mb-0">Aún no se ha iniciado el ingreso de resultados.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+        <!-- COLUMNA DERECHA - DONDE SE OBTIENEN LOS DATOS -->
+        <div class="col-xl-8">
+            
+            <!-- Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="mb-0"><i class="fas fa-edit me-2"></i>{{ titulo }}</h3>
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Exámenes y Paquetes en la Orden</h5>
+            <!-- Sistema de Pestañas para Gestión -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light p-0">
+                    <ul class="nav nav-tabs nav-justified" id="gestionTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="configuracion-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#configuracion" type="button" role="tab" 
+                                    aria-controls="configuracion" aria-selected="true">
+                                <i class="fas fa-sliders-h me-2"></i>Configuración
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pagos-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#pagos" type="button" role="tab" 
+                                    aria-controls="pagos" aria-selected="false">
+                                <i class="fas fa-dollar-sign me-2"></i>Gestión de Pagos
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="items-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#items" type="button" role="tab" 
+                                    aria-controls="items" aria-selected="false">
+                                <i class="fas fa-boxes me-2"></i>Gestión de Items
+                            </button>
+                        </li>
+                    </ul>
                 </div>
+                
                 <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        {% for item in items_examen %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong class="me-2">{{ item.examen.nombre }}</strong>
-                                <span class="text-muted">({{ item.examen.codigo }})</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <span class="fw-bold me-3">$ {{ item.precio_en_orden|floatformat:2 }}</span>
-                                <form method="post" action="{% url 'orden_remove_examen' orden_pk=object.pk examen_pk=item.examen.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-trash-alt me-1"></i> Quitar
-                                    </button>
-                                </form>
-                            </div>
-                        </li>
-                        {% endfor %}
+                    <div class="tab-content" id="gestionTabsContent">
                         
-                        {% for item in items_paquete %}
-                        <li class_("list-group-item d-flex justify-content-between align-items-center bg-light">
-                            <div>
-                                <strong class="me-2"><i class="fas fa-box-open me-1"></i> {{ item.paquete.nombre }}</strong>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <span class="fw-bold me-3">$ {{ item.precio_en_orden|floatformat:2 }}</span>
-                                <form method="post" action="{% url 'orden_remove_paquete' orden_pk=object.pk paquete_pk=item.paquete.pk %}">
+                        <!-- Pestaña 1: Configuración -->
+                        <div class="tab-pane fade show active" id="configuracion" role="tabpanel" 
+                             aria-labelledby="configuracion-tab" tabindex="0">
+                            <div class="p-4">
+                                <h5 class="mb-4"><i class="fas fa-cogs me-2"></i>Actualizar Configuración de la Orden</h5>
+                                <form method="post" id="ordenUpdateForm" action="{% url 'orden_update' pk=object.pk %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">
-                                        <i class="fas fa-trash-alt me-1"></i> Quitar
-                                    </button>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+                                            {{ form.estado }}
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="{{ form.prioridad.id_for_label }}" class="form-label fw-bold">Prioridad</label>
+                                            {{ form.prioridad }}
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="{{ form.metodo_entrega.id_for_label }}" class="form-label fw-bold">Método de Entrega</label>
+                                            {{ form.metodo_entrega }}
+                                        </div>
+                                    </div>
+                                    <div class="text-end mt-4">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-save me-2"></i>Actualizar Configuración
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
-                        </li>
-                        {% endfor %}
-
-                        {% if not items_examen and not items_paquete %}
-                        <li class="list-group-item text-muted text-center">No hay ítems en esta orden.</li>
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="card-footer">
-                    <div class="row text-end">
-                        <div class="col-md-8"></div>
-                        <div class="col-md-4">
-                            <h6 class="mb-1">Subtotal: <span class="float-end">$ {{ object.subtotal|floatformat:2 }}</span></h6>
-                            <h6 class="mb-1 text-danger">Descuento: <span class_("float-end">- $ {{ object.descuento_aplicado|floatformat:2 }}</span></h6>
-                            <hr class="my-1">
-                            <h5 class="mb-0 fw-bold">Total: <span class="float-end">$ {{ object.total_pagado|floatformat:2 }}</span></h5>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="fas fa-search-plus me-2"></i>Añadir Exámenes o Paquetes</h5>
-                </div>
-                <div class="card-body p-4">
-                    <form method="get" class="mb-3">
-                        <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o código..." value="{{ search_query|default:'' }}">
-                            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i> Buscar</button>
-                        </div>
-                    </form>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Exámenes Disponibles</h6>
-                            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
-                                {% for examen in examenes_disponibles %}
-                                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ examen.nombre }}</strong> ({{ examen.codigo }})
-                                        <small class="d-block text-muted">$ {{ examen.precio|floatformat:2 }}</small>
+                        <!-- Pestaña 2: Gestión de Pagos -->
+                        <div class="tab-pane fade" id="pagos" role="tabpanel" 
+                             aria-labelledby="pagos-tab" tabindex="0">
+                            <div class="p-4">
+                                <h5 class="mb-4"><i class="fas fa-money-bill-wave me-2"></i>Gestión de Pagos</h5>
+                                
+                                <!-- Formulario de Nuevo Pago -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-success text-white">
+                                        <h6 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Registrar Nuevo Pago</h6>
                                     </div>
-                                    <form method="post" action="{% url 'orden_add_examen' orden_pk=object.pk %}">
-                                        {% csrf_token %}
-                                        {{ add_examen_form.examen_id.as_hidden }}
-                                        <input type="hidden" name="examen_id" value="{{ examen.pk }}">
-                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus"></i></button>
-                                    </form>
+                                    <div class="card-body">
+                                        <form method="post" action="{% url 'pago_create' orden_pk=object.pk %}">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="{{ pago_form.monto.id_for_label }}" class="form-label fw-bold">Monto</label>
+                                                    {{ pago_form.monto }}
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="{{ pago_form.metodo.id_for_label }}" class="form-label fw-bold">Método de Pago</label>
+                                                    {{ pago_form.metodo }}
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label for="{{ pago_form.observaciones.id_for_label }}" class="form-label fw-bold">Observaciones</label>
+                                                    {{ pago_form.observaciones }}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="fas fa-plus me-2"></i>Registrar Pago
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                {% empty %}
-                                    <div class="list-group-item text-muted">No se encontraron exámenes.</div>
-                                {% endfor %}
+
+                                <!-- Historial de Pagos -->
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Pagos</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Monto</th>
+                                                        <th>Método</th>
+                                                        <th>Observaciones</th>
+                                                        <th>Registrado por</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for pago in pagos_list %}
+                                                    <tr>
+                                                        <td>
+                                                            <small class="text-muted">{{ pago.fecha_pago|date:"d/m/Y" }}</small><br>
+                                                            <small class="text-muted">{{ pago.fecha_pago|date:"h:i A" }}</small>
+                                                        </td>
+                                                        <td class="fw-bold text-success">${{ pago.monto|floatformat:2 }}</td>
+                                                        <td><span class="badge bg-secondary">{{ pago.metodo }}</span></td>
+                                                        <td><small class="text-muted">{{ pago.observaciones|default:"-" }}</small></td>
+                                                        <td><small class="text-muted">{{ pago.registrado_por.username }}</small></td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">
+                                                            No hay pagos registrados
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <h6>Paquetes Disponibles</h6>
-                            <div class="list-group" style="max-height: 400px; overflow-y: auto;">
-                                {% for paquete in paquetes_disponibles %}
-                                 <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ paquete.nombre }}</strong>
-                                        <small class="d-block text-muted">$ {{ paquete.precio|floatformat:2 }}</small>
+
+                        <!-- Pestaña 3: Gestión de Items -->
+                        <div class="tab-pane fade" id="items" role="tabpanel" 
+                             aria-labelledby="items-tab" tabindex="0">
+                            <div class="p-4">
+                                <h5 class="mb-4"><i class="fas fa-boxes me-2"></i>Gestión de Items de la Orden</h5>
+                                
+                                <!-- Búsqueda de Items -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-info text-white">
+                                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>Buscar y Agregar Items</h6>
                                     </div>
-                                    <form method="post" action="{% url 'orden_add_paquete' orden_pk=object.pk %}">
-                                        {% csrf_token %}
-                                        {{ add_paquete_form.paquete_id.as_hidden }}
-                                        <input type="hidden" name="paquete_id" value="{{ paquete.pk }}">
-                                        <button type="submit" class="btn btn-info btn-sm text-white"><i class="fas fa-plus"></i></button>
-                                    </form>
+                                    <div class="card-body">
+                                        <form method="get" class="mb-4">
+                                            <div class="input-group input-group-lg">
+                                                <input type="text" name="q" class="form-control" 
+                                                       placeholder="Buscar exámenes o paquetes por nombre o código..." 
+                                                       value="{{ search_query|default:'' }}">
+                                                <button class="btn btn-primary" type="submit">
+                                                    <i class="fas fa-search me-1"></i> Buscar
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        <div class="row">
+                                            <!-- Exámenes Disponibles -->
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold mb-3 text-primary">
+                                                    <i class="fas fa-microscope me-2"></i>Exámenes Disponibles
+                                                </h6>
+                                                <div style="max-height: 400px; overflow-y: auto;">
+                                                    {% for examen in examenes_disponibles %}
+                                                    <div class="card mb-2">
+                                                        <div class="card-body">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <h6 class="mb-1">{{ examen.nombre }}</h6>
+                                                                    <small class="text-muted">Código: {{ examen.codigo }}</small><br>
+                                                                    <small class="text-success fw-bold">$ {{ examen.precio|floatformat:2 }}</small>
+                                                                </div>
+                                                                <form method="post" action="{% url 'orden_add_examen' orden_pk=object.pk %}">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="examen_id" value="{{ examen.pk }}">
+                                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                                        <i class="fas fa-plus"></i> Agregar
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                    <div class="text-center py-3 text-muted">
+                                                        <i class="fas fa-search fa-2x mb-2"></i>
+                                                        <p>No se encontraron exámenes</p>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                            <!-- Paquetes Disponibles -->
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold mb-3 text-info">
+                                                    <i class="fas fa-box-open me-2"></i>Paquetes Disponibles
+                                                </h6>
+                                                <div style="max-height: 400px; overflow-y: auto;">
+                                                    {% for paquete in paquetes_disponibles %}
+                                                    <div class="card mb-2">
+                                                        <div class="card-body">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <h6 class="mb-1">{{ paquete.nombre }}</h6>
+                                                                    <small class="text-success fw-bold">$ {{ paquete.precio|floatformat:2 }}</small>
+                                                                </div>
+                                                                <form method="post" action="{% url 'orden_add_paquete' orden_pk=object.pk %}">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="paquete_id" value="{{ paquete.pk }}">
+                                                                    <button type="submit" class="btn btn-info btn-sm text-white">
+                                                                        <i class="fas fa-plus"></i> Agregar
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                    <div class="text-center py-3 text-muted">
+                                                        <i class="fas fa-search fa-2x mb-2"></i>
+                                                        <p>No se encontraron paquetes</p>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                {% empty %}
-                                    <div class="list-group-item text-muted">No se encontraron paquetes.</div>
-                                {% endfor %}
+
+                                <!-- Items Actuales (para eliminar) -->
+                                <div class="card">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h6 class="mb-0"><i class="fas fa-trash-alt me-2"></i>Eliminar Items de la Orden</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {% if items_examen or items_paquete %}
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo</th>
+                                                        <th>Nombre</th>
+                                                        <th class="text-end">Precio</th>
+                                                        <th width="100"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for item in items_examen %}
+                                                    <tr>
+                                                        <td><span class="badge bg-primary">Examen</span></td>
+                                                        <td>{{ item.examen.nombre }}</td>
+                                                        <td class="text-end">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+                                                        <td class="text-end">
+                                                            <form method="post" action="{% url 'orden_remove_examen' orden_pk=object.pk examen_pk=item.examen.pk %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                                    <i class="fas fa-trash"></i> Quitar
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                    
+                                                    {% for item in items_paquete %}
+                                                    <tr>
+                                                        <td><span class="badge bg-info">Paquete</span></td>
+                                                        <td>{{ item.paquete.nombre }}</td>
+                                                        <td class="text-end">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+                                                        <td class="text-end">
+                                                            <form method="post" action="{% url 'orden_remove_paquete' orden_pk=object.pk paquete_pk=item.paquete.pk %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                                    <i class="fas fa-trash"></i> Quitar
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% else %}
+                                        <div class="text-center py-4 text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                            <p>No hay items para eliminar</p>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar pestañas
+        var triggerTabList = [].slice.call(document.querySelectorAll('#gestionTabs button'));
+        triggerTabList.forEach(function (triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl);
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault();
+                tabTrigger.show();
+            });
+        });
+
+        // Feedback al guardar configuración
+        document.getElementById('ordenUpdateForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Guardando...';
+            submitBtn.disabled = true;
+        });
+    });
+</script>
 {% endblock %}

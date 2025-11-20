@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: letter;
+            margin: 2cm;
+            @frame footer_frame {           /* Static Frame */
+                -pdf-frame-content: footer_content;
+                bottom: 0cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1cm;
+            }
+        }
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+        /* xhtml2pdf usa tablas para layout */
+        .header-table { width: 100%; border-bottom: 2px solid #2A3F54; padding-bottom: 10px; margin-bottom: 20px; }
+        .header-left { text-align: left; }
+        .header-right { text-align: right; font-size: 10px; }
+        
+        .logo { font-size: 24px; font-weight: bold; color: #2A3F54; }
+        
+        .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .info-table { width: 100%; margin-bottom: 20px; }
+        .info-table td { padding: 3px; }
+        
+        .items-table { width: 100%; border: 0.5px solid #ccc; }
+        .items-table th { background-color: #f0f0f0; padding: 5px; text-align: left; border-bottom: 1px solid #ccc; }
+        .items-table td { padding: 5px; border-bottom: 1px solid #eee; }
+        
+        .totals-table { width: 100%; margin-top: 10px; }
+        .totals-label { text-align: right; font-weight: bold; padding-right: 10px; }
+        .totals-value { text-align: right; width: 20%; border-bottom: 1px solid #ccc; }
+        .total-final { border-top: 2px solid #333; font-size: 14px; }
+
+        /* Marca de agua */
+        .watermark {
+            color: red;
+            border: 2px solid red;
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;
+            opacity: 0.4;
+            text-align: center;
+            position: fixed;
+            top: 30%;
+            left: 30%;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+
+    {% if factura.estado == 'Anulada' %}
+        <div class="watermark">ANULADA</div>
+    {% elif factura.estado == 'Pendiente' %}
+        <div class="watermark" style="color: orange; border-color: orange;">PENDIENTE PAGO</div>
+    {% endif %}
+
+    <table class="header-table">
+        <tr>
+            <td class="header-left">
+                <span class="logo">{{ empresa.nombre }}</span>
+            </td>
+            <td class="header-right">
+                {{ empresa.direccion }}<br>
+                Tel: {{ empresa.telefono }}<br>
+                {{ empresa.email }}
+            </td>
+        </tr>
+    </table>
+
+    <div class="title">
+        {{ factura.get_tipo_factura_display }} #{{ factura.numero_factura }}
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td width="50%" valign="top">
+                <strong>Cliente:</strong><br>
+                {{ factura.cliente_nombre }}<br>
+                {% if factura.cliente_dui %}DUI/NIT: {{ factura.cliente_dui }}{% endif %}
+            </td>
+            <td width="50%" valign="top" style="text-align: right;">
+                <strong>Fecha Emisión:</strong> {{ factura.fecha_emision|date:"d/m/Y" }}<br>
+                {% if factura.fecha_vencimiento %}
+                    <strong>Vencimiento:</strong> {{ factura.fecha_vencimiento|date:"d/m/Y" }}<br>
+                {% endif %}
+                <strong>Orden Lab:</strong> #{{ factura.orden.pk }}
+            </td>
+        </tr>
+    </table>
+
+    <table class="items-table" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th style="text-align: right;">Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items_examen %}
+            <tr>
+                <td>
+                    {{ item.examen.nombre }}
+                    <br><small style="color: #666;">{{ item.examen.codigo }}</small>
+                </td>
+                <td style="text-align: right;">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+            {% for item in items_paquete %}
+            <tr>
+                <td>Paquete: {{ item.paquete.nombre }}</td>
+                <td style="text-align: right;">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="totals-table">
+        <tr>
+            <td width="60%"></td>
+            <td class="totals-label">Subtotal:</td>
+            <td class="totals-value">$ {{ factura.subtotal|floatformat:2 }}</td>
+        </tr>
+        {% if factura.descuento > 0 %}
+        <tr>
+            <td></td>
+            <td class="totals-label" style="color: red;">Descuento:</td>
+            <td class="totals-value" style="color: red;">- $ {{ factura.descuento|floatformat:2 }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td></td>
+            <td class="totals-label">IVA:</td>
+            <td class="totals-value">$ {{ factura.iva|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="totals-label total-final">TOTAL:</td>
+            <td class="totals-value total-final"><strong>$ {{ factura.total|floatformat:2 }}</strong></td>
+        </tr>
+    </table>
+
+    {% if factura.observaciones %}
+    <div style="margin-top: 30px; border-top: 1px dotted #ccc; padding-top: 5px; font-size: 10px;">
+        <strong>Observaciones:</strong> {{ factura.observaciones }}
+    </div>
+    {% endif %}
+
+    <div id="footer_content" style="text-align: center; font-size: 9px; color: #777;">
+        Este documento es un comprobante válido. Generado por {{ user.username }}.
+    </div>
+
+</body>
+</html>

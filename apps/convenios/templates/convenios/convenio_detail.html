@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-11">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>
+                    <i class="fas fa-handshake me-2 text-primary"></i>{{ convenio.nombre }}
+                    <span class="badge bg-secondary fs-6 align-middle">{{ convenio.tipo }}</span>
+                </h2>
+                <div>
+                    <a href="{% url 'convenio_update' convenio.pk %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i> Editar Generales
+                    </a>
+                    <a href="{% url 'convenio_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Facturación</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ convenio.get_tipo_facturacion_display }}</div>
+                            <small>{{ convenio.condiciones_pago }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Descuentos Base</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div>Exámenes: <span class="fw-bold">{{ convenio.descuento_general_examenes }}%</span></div>
+                                    <div>Paquetes: <span class="fw-bold">{{ convenio.descuento_general_paquetes }}%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Contacto</div>
+                            <div>{{ convenio.persona_contacto }}</div>
+                            <small>{{ convenio.telefono_contacto }} / {{ convenio.correo_contacto }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Excepciones por Examen</h6>
+                            <a href="{% url 'add_desc_examen' convenio.pk %}" class="btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus fa-sm"></i> Agregar
+                            </a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Examen</th>
+                                            <th>Desc. Específico</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in excepciones_examenes %}
+                                        <tr>
+                                            <td>{{ item.examen.nombre }}</td>
+                                            <td class="fw-bold text-success">{{ item.porcentaje_descuento }}%</td>
+                                            <td>
+                                                <form method="post" action="{% url 'del_desc_examen' item.pk %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm py-0" onclick="return confirm('¿Eliminar este descuento específico? Aplicará el general.')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted small py-3">
+                                                No hay excepciones. Aplica el {{ convenio.descuento_general_examenes }}% general.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-info">Excepciones por Paquete</h6>
+                            <a href="{% url 'add_desc_paquete' convenio.pk %}" class="btn btn-sm btn-info shadow-sm text-white">
+                                <i class="fas fa-plus fa-sm"></i> Agregar
+                            </a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Paquete</th>
+                                            <th>Desc. Específico</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in excepciones_paquetes %}
+                                        <tr>
+                                            <td>{{ item.paquete.nombre }}</td>
+                                            <td class="fw-bold text-success">{{ item.porcentaje_descuento }}%</td>
+                                            <td>
+                                                <form method="post" action="{% url 'del_desc_paquete' item.pk %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm py-0" onclick="return confirm('¿Eliminar este descuento?')">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted small py-3">
+                                                No hay excepciones. Aplica el {{ convenio.descuento_general_paquetes }}% general.
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

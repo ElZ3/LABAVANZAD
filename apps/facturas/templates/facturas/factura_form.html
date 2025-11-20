@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h3 class="text-center mb-0"><i class="fas fa-magic me-2"></i>{{ titulo }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <div class="alert alert-primary text-center">
+                        <i class="fas fa-info-circle fa-2x mb-2"></i><br>
+                        Se generará el siguiente número correlativo:<br>
+                        <strong class="fs-3">{{ proximo_numero }}</strong>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        {% if orden.convenio %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha de Vencimiento (Crédito Fiscal)</label>
+                            {{ form.fecha_vencimiento }}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Observaciones (Opcional)</label>
+                            {{ form.observaciones }}
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check-circle me-2"></i>Confirmar y Generar
+                            </button>
+                            <a href="{% url 'orden_update' pk=orden.pk %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

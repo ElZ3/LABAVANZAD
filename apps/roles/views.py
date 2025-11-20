@@ -17,7 +17,7 @@ class RolListView(AdminRequiredMixin, ListView):
 class RolCreateView(AdminRequiredMixin, CreateView):
     model = Rol
     form_class = RolForm
-    template_name = 'roles/rol_registrar.html'
+    template_name = 'roles/rol_form.html'
     success_url = reverse_lazy('rol_list')
 
     def get_context_data(self, **kwargs):
@@ -32,7 +32,7 @@ class RolCreateView(AdminRequiredMixin, CreateView):
 class RolUpdateView(AdminRequiredMixin, UpdateView):
     model = Rol
     form_class = RolForm
-    template_name = 'roles/rol_editar.html'
+    template_name = 'roles/rol_form.html'
     success_url = reverse_lazy('rol_list')
 
     def get_context_data(self, **kwargs):

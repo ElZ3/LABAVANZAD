@@ -83,7 +83,7 @@
                                 <li>
                                     <a><i class="fa fa-tint"></i> Muestras <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="">Gestion de Muestras</a></li>
+                                        <li><a href="{% url 'muestra_lista' %}">Gestion de Muestras</a></li>
                                         <li><a href="">Trazabilidad</a></li>
                                         <li><a href="">Alertas de Tiempo</a></li>
                                     </ul>
@@ -93,9 +93,9 @@
                                 <li>
                                     <a><i class="fa fa-bar-chart"></i> Resultados <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="{% url 'resultado_create' %}">Ingreso de Resultados</a></li>
-                                        <li><a href="/resultados/validacion/">Validación</a></li>
-                                        <li><a href="{% url 'resultado_list' %}">Generación de Informes</a></li>
+                                        <li><a href="{% url 'resultado_lista' %}">Ingreso de Resultados</a></li>
+                                        <li><a href="{% url 'validacion_lista' %}">Validación</a></li>
+                                        <li><a href="">Generación de Informes</a></li>
                                     </ul>
                                 </li>
 

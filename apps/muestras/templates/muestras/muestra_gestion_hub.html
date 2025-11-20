@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Columna Izquierda (Info) -->
+        <div class="col-xl-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header text-white" style="background-color: #2A3F54;">
+                    <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Orden #{{ orden.pk }}</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="fw-bold">Paciente:</h6>
+                    <p class="lead">{{ orden.paciente }}</p>
+                    <h6 class="fw-bold">Convenio:</h6>
+                    <p>{{ orden.convenio.nombre|default:"Cliente Privado" }}</p>
+                    <h6 class="fw-bold">Estado de Orden:</h6>
+                    <p><span class="badge bg-primary">{{ orden.get_estado_display }}</span></p>
+                    <a href="{% url 'muestra_lista' %}" class="btn btn-secondary mt-2 w-100">
+                        <i class="fas fa-arrow-left me-1"></i> Volver al Listado
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Columna Derecha (Gestión) -->
+        <div class="col-xl-8">
+            
+            <!-- Panel 1: Muestras PENDIENTES de Toma -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Muestras Pendientes de Registro</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for tipo in muestras_pendientes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-5">{{ tipo.nombre }}</span>
+                            <a href="{% url 'muestra_create' orden_pk=orden.pk %}" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i> Registrar Toma/Recepción
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted text-center">
+                            Todas las muestras requeridas para esta orden ya han sido registradas.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Panel 2: Muestras YA REGISTRADAS -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>Muestras Registradas (Trazabilidad)</h5>
+                </div>
+                <div class_("card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for muestra in muestras_registradas %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong class="me-2">{{ muestra.tipo_muestra.nombre }}</strong>
+                                <small class="d-block text-muted">Tomada por: {{ muestra.responsable_toma.username }}</small>
+                                <small class="d-block text-muted">Fecha: {{ muestra.fecha_toma|date:"d/m/Y h:i A" }}</small>
+                                {% if muestra.codigo_barras %}
+                                    <span class="badge bg-light text-dark border mt-1">#{{ muestra.codigo_barras }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge 
+                                    {% if muestra.estado == 'Recepcionada' %}bg-primary
+                                    {% elif muestra.estado == 'Rechazada' %}bg-danger
+                                    {% else %}bg-success{% endif %} me-3">
+                                    {{ muestra.estado }}
+                                </span>
+                                <a href="{% url 'muestra_update' pk=muestra.pk %}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-pen me-1"></i> Actualizar Estado
+                                </a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted text-center">
+                            Aún no se han registrado muestras para esta orden.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

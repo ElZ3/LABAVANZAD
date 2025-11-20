@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError # Importante
-import re # Para el clean del teléfono
+from django.core.exceptions import ValidationError
+from datetime import date
+import re
 
 class Paciente(models.Model):
     """
@@ -25,11 +26,22 @@ class Paciente(models.Model):
     dui = models.CharField(max_length=10, unique=True, blank=False)
     telefono = models.CharField(max_length=8, blank=False)
     correo = models.EmailField(max_length=100, blank=False, verbose_name="Correo Electrónico")
+    edad_al_registro = models.PositiveIntegerField(null=True, blank=True, verbose_name="Edad al Registro"
+    )
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
 
     # --- REGLAS DE NEGOCIO Y LIMPIEZA ---
+
+    @property
+    def edad(self):
+        """Calcula la edad precisa en el momento actual."""
+        if not self.fecha_nacimiento: return None
+        today = date.today()
+        return today.year - self.fecha_nacimiento.year - (
+            (today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day)
+        )
 
     def clean(self):
         """

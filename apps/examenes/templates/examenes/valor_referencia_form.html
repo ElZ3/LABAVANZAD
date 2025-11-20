@@ -7,50 +7,97 @@
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-xl-8">
+
             <div class="card shadow-sm">
                 <div class="card-header text-white" style="background-color: #2A3F54;">
-                    <h3 class="text-center mb-0"><i class="fas fa-ruler-combined me-2"></i>{{ titulo }}</h3>
+                    <h3 class="text-center mb-0">
+                        <i class="fas fa-ruler-combined me-2"></i>{{ titulo }}
+                    </h3>
                 </div>
+
                 <div class="card-body p-4">
                     <form method="post">
                         {% csrf_token %}
-                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.poblacion.id_for_label }}" class="form-label fw-bold">Población (Opcional)</label>
-                                {{ form.poblacion }}
-                                <div class="text-danger small">{{ form.poblacion.errors }}</div>
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <!-- ENCABEZADO -->
+                        <div class="row mb-1 fw-bold small text-muted border-bottom pb-1">
+                            <div class="col-md-3">Sexo / Edad</div>
+                            <div class="col-md-2">Rango</div>
+                            <div class="col-md-2">Unidad</div>
+                            <div class="col-md-2">Tipo</div>
+                            <div class="col-md-2">Estado</div>
+                            <div class="col-auto"></div>
+                        </div>
+
+                        <!-- FILA DE FORMULARIO -->
+                        <div class="formset-row row align-items-start mb-2 border-bottom pb-2">
+
+                            {{ form.id }}
+
+                            <!-- SEXO + EDADES -->
+                            <div class="col-md-3">
+                                <div class="mb-1">{{ form.sexo }}</div>
+
+                                <div class="input-group input-group-sm">
+                                    {{ form.edad_minima }}
+                                    <span class="input-group-text">-</span>
+                                    {{ form.edad_maxima }}
+                                    <span class="input-group-text">años</span>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.rango_referencia.id_for_label }}" class="form-label fw-bold">Rango o Valor</label>
+
+                            <!-- RANGO -->
+                            <div class="col-md-2">
                                 {{ form.rango_referencia }}
                                 <div class="text-danger small">{{ form.rango_referencia.errors }}</div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.unidad_medida.id_for_label }}" class="form-label fw-bold">Unidad (Opcional)</label>
+
+                            <!-- UNIDAD -->
+                            <div class="col-md-2">
                                 {{ form.unidad_medida }}
-                                <div class="text-danger small">{{ form.unidad_medida.errors }}</div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.tipo_resultado.id_for_label }}" class="form-label fw-bold">Tipo de Resultado</label>
+
+                            <!-- TIPO -->
+                            <div class="col-md-2">
                                 {{ form.tipo_resultado }}
-                                <div class="text-danger small">{{ form.tipo_resultado.errors }}</div>
                             </div>
-                            <div class="col-12 mb-3">
-                                <label for="{{ form.estado.id_for_label }}" class="form-label fw-bold">Estado</label>
+
+                            <!-- ESTADO -->
+                            <div class="col-md-2">
                                 {{ form.estado }}
-                                <div class="text-danger small">{{ form.estado.errors }}</div>
                             </div>
+
+                            <!-- BOTÓN ELIMINAR -->
+                            <div class="col-auto delete-btn-col">
+                                {% if not form.instance.pk %}
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-form-row">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                {% endif %}
+                                <div class="d-none">{{ form.DELETE }}</div>
+                            </div>
+
                         </div>
 
+                        <!-- BOTONES ABAJO -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'examen_update' pk=examen.pk %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Examen</a>
-                            <button type="submit" class="btn btn-success"><i class="fas fa-save me-2"></i>Guardar Valor</button>
+                            <a href="{% url 'examen_update' pk=examen.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver al Examen
+                            </a>
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-2"></i>Guardar Valor
+                            </button>
                         </div>
+
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

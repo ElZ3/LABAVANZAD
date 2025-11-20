@@ -23,4 +23,12 @@ urlpatterns = [
     path('gestion/orden/<int:orden_pk>/remove_paquete/<int:paquete_pk>/', 
          views.RemovePaqueteFromOrdenView.as_view(), 
          name='orden_remove_paquete'),
+    
+  # --- APIs de Búsqueda (CORREGIDAS) ---
+    # Antes tenías 'api/buscar/' en ambas. Ahora son distintas:
+    path('api/buscar/pacientes/', views.buscar_pacientes_api, name='api_buscar_pacientes'),
+    path('api/buscar/convenios/', views.buscar_convenios_api, name='api_buscar_convenios'),
+    path('gestion/orden/<int:pk>/imprimir_resultados/', 
+         views.OrdenResultadoPDFView.as_view(), 
+         name='orden_imprimir_resultados'),
 ]

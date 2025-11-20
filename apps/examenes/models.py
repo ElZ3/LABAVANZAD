@@ -85,52 +85,49 @@ class MetodoExamen(models.Model):
 
 
 class ValorReferencia(models.Model):
-    """
-    Modelo "hijo" para los valores/parámetros. Ahora incluye un estado.
-    """
+    # ... (ID y FK a Examen igual que antes) ...
     valor_referencia_id = models.AutoField(primary_key=True)
-    examen = models.ForeignKey(
-        Examen, 
-        on_delete=models.CASCADE, 
-        related_name='valores_referencia'
+    examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name='valores_referencia')
+
+    # --- NUEVOS CAMPOS DE CLASIFICACIÓN ---
+    SEXO_APLICABLE = [
+        ('Indistinto', 'Ambos Sexos'),
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+    ]
+    sexo = models.CharField(
+        max_length=10, 
+        choices=SEXO_APLICABLE, 
+        default='Indistinto',
+        verbose_name="Sexo"
     )
     
-    poblacion = models.CharField(
-        max_length=100, 
-        blank=True,
-        help_text="Ej: Hombres, Mujeres, Niños (Dejar en blanco si es general)"
-    )
-    rango_referencia = models.CharField(
-        max_length=100, 
-        blank=False,
-        verbose_name="Rango o Valor",
-        help_text="Ej: 120 - 200, Negativo, < 10"
-    )
-    unidad_medida = models.CharField(
-        max_length=50,
-        blank=True, 
-        verbose_name="Unidad de Medida",
-        help_text="Ej: mg/dL (Dejar en blanco si no aplica)"
-    )
+    # Rango de edad en AÑOS (Ej: 0 a 120)
+    edad_minima = models.PositiveIntegerField(default=0, verbose_name="Edad Mín (Años)")
+    edad_maxima = models.PositiveIntegerField(default=120, verbose_name="Edad Máx (Años)")
+    
+    # --- CAMPOS DE VALOR (Igual que antes) ---
+    rango_referencia = models.CharField(max_length=100, blank=False, verbose_name="Rango o Valor")
+    unidad_medida = models.CharField(max_length=50, blank=True, verbose_name="Unidad")
+    
     TIPO_RESULTADO_CHOICES = [
         ('Cuantitativo', 'Cuantitativo (Número)'),
         ('Cualitativo', 'Cualitativo (Texto)'),
     ]
     tipo_resultado = models.CharField(
-        max_length=20,
-        choices=TIPO_RESULTADO_CHOICES,
-        blank=False,
-        default='Cuantitativo',
-        verbose_name="Tipo de Resultado"
+        max_length=20, choices=TIPO_RESULTADO_CHOICES, default='Cuantitativo'
     )
     
-    # REQUISITO: Añadir estado para inactivar en lugar de borrar
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activo', blank=False)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Activo')
 
+    # Generamos el texto automáticamente para que se lea bonito
     def __str__(self):
-        pob = f"{self.poblacion}: " if self.poblacion else ""
-        uni = f" {self.unidad_medida}" if self.unidad_medida else ""
-        return f"{pob}{self.rango_referencia}{uni} ({self.estado})"
+        sexo_txt = "" if self.sexo == 'Indistinto' else f"{self.get_sexo_display()} "
+        edad_txt = ""
+        if self.edad_minima > 0 or self.edad_maxima < 120:
+            edad_txt = f"({self.edad_minima}-{self.edad_maxima} años): "
+        
+        return f"{sexo_txt}{edad_txt}{self.rango_referencia} {self.unidad_medida}"
 
     class Meta:
         db_table = 'Examenes_Valores_Referencia'

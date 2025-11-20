@@ -35,6 +35,8 @@ urlpatterns = [
         path('', include('resultados.urls')),
         path('', include('paquetes.urls')),
         path('', include('tipos_muestras.urls')),
+        path('', include('pagos.urls')),
+        path('', include('facturas.urls')),
         
         # Ruta para el dashboard (requiere login)
         path('dashboard/', TemplateView.as_view(template_name="dashboard.html"), name='dashboard'),

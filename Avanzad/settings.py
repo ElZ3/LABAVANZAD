@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'resultados',
     'paquetes',
     'tipos_muestras',
+    'pagos',
+    'facturas',
 ]
 
 MIDDLEWARE = [

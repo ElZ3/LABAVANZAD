@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Estilos simples para impresión */
+    @media print {
+        body {
+            background-color: #fff;
+        }
+        .container-fluid {
+            padding: 0 !important;
+        }
+        .card-header, .btn, .breadcrumb {
+            display: none !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">{{ titulo }}</h3>
+                    <div>
+<a href="{% url 'factura_pdf' pk=factura.pk %}" target="_blank" class="btn btn-danger btn-sm">
+    <i class="fas fa-file-pdf me-1"></i> Descargar PDF
+</a>
+                    </div>
+                </div>
+                <div class="card-body p-5">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4>{{ factura.get_tipo_factura_display }}</h4>
+                            <h1 class="display-4 fw-bold text-danger">{{ factura.numero_factura }}</h1>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <strong>Fecha Emisión:</strong> {{ factura.fecha_emision|date:"d/m/Y h:i A" }}<br>
+                            {% if factura.fecha_vencimiento %}
+                            <strong>Fecha Vencimiento:</strong> {{ factura.fecha_vencimiento|date:"d/m/Y" }}<br>
+                            {% endif %}
+                            <strong>Orden de Laboratorio #:</strong> {{ factura.orden.pk }}<br>
+                            <strong>Emitida por:</strong> {{ factura.creado_por.username }}
+                        </div>
+                    </div>
+
+                    <div class_("card mb-4">
+                        <div class="card-body bg-light rounded p-3">
+                            <h5 class="fw-bold">Cliente:</h5>
+                            <p class="lead mb-0">{{ factura.cliente_nombre }}</p>
+                            {% if factura.cliente_dui %}
+                            <p class="mb-0">DUI/NIT: {{ factura.cliente_dui }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mt-4">Detalle de Servicios</h5>
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Descripción</th>
+                                <th scope="col" class="text-end">Precio Unitario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items_examen %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.examen.nombre }}</strong>
+                                    <small class="d-block text-muted">{{ item.examen.codigo }}</small>
+                                </td>
+                                <td class="text-end">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% for item in items_paquete %}
+                            <tr>
+                                <td>
+                                    <strong>Paquete: {{ item.paquete.nombre }}</strong>
+                                </td>
+                                <td class="text-end">$ {{ item.precio_en_orden|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="row justify-content-end mt-4">
+                        <div class="col-md-5">
+                            <h6 class="mb-2">Subtotal: <span class="float-end">$ {{ factura.subtotal|floatformat:2 }}</span></h6>
+                            <h6 class="mb-2 text-danger">Descuento: <span class="float-end">- $ {{ factura.descuento|floatformat:2 }}</span></h6>
+                            <h6 class="mb-2">IVA ({{ IVA_PORCENTAJE|default:"13" }}%): <span class="float-end">$ {{ factura.iva|floatformat:2 }}</span></h6>
+                            <hr>
+                            <h4 class="mb-3 fw-bold">TOTAL: <span class="float-end">$ {{ factura.total|floatformat:2 }}</span></h4>
+                            <h5 class="mb-0">Estado: <span class="badge 
+                                {% if factura.estado == 'Pagada' %}bg-success
+                                {% elif factura.estado == 'Parcial' %}bg-warning text-dark
+                                {% else %}bg-danger{% endif %}">
+                                {{ factura.get_estado_display }}
+                            </span></h5>
+                        </div>
+                    </div>
+
+                    {% if factura.observaciones %}
+                    <div class="mt-4">
+                        <h6 class="fw-bold">Observaciones:</h6>
+                        <p class="text-muted">{{ factura.observaciones }}</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

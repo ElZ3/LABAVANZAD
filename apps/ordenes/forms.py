@@ -13,8 +13,9 @@ class OrdenCreateForm(forms.ModelForm):
         fields = ['paciente', 'convenio', 'prioridad', 'metodo_entrega']
         widgets = {
             # Usamos un Select simple. En una app real, esto usaría Select2.
-            'paciente': forms.Select(attrs={'class': 'form-select'}),
-            'convenio': forms.Select(attrs={'class': 'form-select'}),
+            # CAMBIO: Usamos HiddenInput. El usuario no interactúa con esto directamente.
+            'paciente': forms.HiddenInput(),
+            'convenio': forms.HiddenInput(),
             'prioridad': forms.Select(attrs={'class': 'form-select'}),
             'metodo_entrega': forms.Select(attrs={'class': 'form-select'}),
         }

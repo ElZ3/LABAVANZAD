@@ -32,7 +32,9 @@
                         <h3 class="text-center mb-0"><i class="fas fa-flask-vial me-2"></i>{{ titulo }}</h3>
                     </div>
                     <div class="card-body p-4">
-                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="card mb-4">
@@ -41,16 +43,54 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-8 mb-3">...{{ form.nombre }}...</div>
-                                            <div class="col-md-4 mb-3">...{{ form.codigo }}...</div>
-                                            <div class="col-md-6 mb-3">...{{ form.categoria }}...</div>
-                                            <div class="col-md-6 mb-3">...{{ form.tipo_muestra }}...</div>
-                                            <div class="col-md-6 mb-3">...{{ form.precio }}...</div>
-                                            <div class="col-md-6 mb-3">...{{ form.estado }}...</div>
+                                            <div class="col-md-8 mb-3">
+                                                <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre del Examen</label>
+                                                {{ form.nombre }}
+                                                {% if form.nombre.errors %}
+                                                    <div class="text-danger small">{{ form.nombre.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="{{ form.codigo.id_for_label }}" class="form-label">Código</label>
+                                                {{ form.codigo }}
+                                                {% if form.codigo.errors %}
+                                                    <div class="text-danger small">{{ form.codigo.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría</label>
+                                                {{ form.categoria }}
+                                                {% if form.categoria.errors %}
+                                                    <div class="text-danger small">{{ form.categoria.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.tipo_muestra.id_for_label }}" class="form-label">Tipo de Muestra</label>
+                                                {{ form.tipo_muestra }}
+                                                {% if form.tipo_muestra.errors %}
+                                                    <div class="text-danger small">{{ form.tipo_muestra.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.precio.id_for_label }}" class="form-label">Precio</label>
+                                                {{ form.precio }}
+                                                {% if form.precio.errors %}
+                                                    <div class="text-danger small">{{ form.precio.errors }}</div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.estado.id_for_label }}" class="form-label">Estado</label>
+                                                {{ form.estado }}
+                                                {% if form.estado.errors %}
+                                                    <div class="text-danger small">{{ form.estado.errors }}</div>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- ACCIONES -->
                             <div class="col-md-4">
                                 <div class="card sticky-top" style="top: 20px;">
                                     <div class="card-header bg-light">
@@ -59,17 +99,23 @@
                                     <div class="card-body">
                                         <p>Guarda los cambios del examen o administra sus métodos y valores.</p>
                                         <div class="d-grid gap-2">
-                                            <button type="submit" class="btn btn-success" id="submitBtn"><i class="fas fa-save me-2"></i>Guardar Cambios</button>
-                                            <a href="{% url 'examen_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Volver al Listado</a>
+                                            <button type="submit" class="btn btn-success" id="submitBtn">
+                                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                                            </button>
+                                            <a href="{% url 'examen_list' %}" class="btn btn-secondary">
+                                                <i class="fas fa-arrow-left me-2"></i>Volver al Listado
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </form>
 
+            <!-- MÉTODOS -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Métodos</h5>
@@ -98,6 +144,7 @@
                 </div>
             </div>
 
+            <!-- VALORES / PARÁMETROS (ACTUALIZADO A NUEVO DISEÑO) -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-ruler-combined me-2"></i>Valores de Referencia / Parámetros</h5>
@@ -105,26 +152,67 @@
                         <i class="fas fa-plus me-1"></i> Añadir Valor/Parámetro
                     </a>
                 </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        {% for valor in valores_list %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong class="me-2">{% if valor.poblacion %}{{ valor.poblacion }}:{% endif %}</strong>
-                                {{ valor.rango_referencia }} {{ valor.unidad_medida }}
-                                <span class="text-muted ms-2">({{ valor.get_tipo_resultado_display }})</span>
-                                {% if valor.estado == 'Inactivo' %}
-                                    <span class="badge bg-danger ms-2">Inactivo</span>
-                                {% endif %}
+
+                <div class="card-body p-3">
+
+                    <!-- ENCABEZADO -->
+                    <div class="row mb-1 fw-bold small text-muted border-bottom pb-2">
+                        <div class="col-md-2">Sexo / Edad</div>
+                        <div class="col-md-3">Rango</div>
+                        <div class="col-md-2">Unidad</div>
+                        <div class="col-md-2">Tipo</div>
+                        <div class="col-md-2">Estado</div>
+                    </div>
+
+                    {% for valor in valores_list %}
+                    <div class="row align-items-start mb-2 border-bottom pb-2">
+                        
+                        <!-- SEXO + EDADES -->
+                        <div class="col-md-2 small">
+                            <div class="fw-bold">{{ valor.get_sexo_display }}</div>
+                            <div class="text-muted">
+                                {{ valor.edad_minima }} - {{ valor.edad_maxima }} años
                             </div>
+                        </div>
+
+                        <!-- RANGO -->
+                        <div class="col-md-3">
+                            {{ valor.rango_referencia }}
+                        </div>
+
+                        <!-- UNIDAD -->
+                        <div class="col-md-2">
+                            {{ valor.unidad_medida }}
+                        </div>
+
+                        <!-- TIPO -->
+                        <div class="col-md-2">
+                            {{ valor.get_tipo_resultado_display }}
+                        </div>
+
+                        <!-- ESTADO -->
+                        <div class="col-md-2">
+                            {% if valor.estado == "Activo" %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactivo</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- EDITAR -->
+                        <div class="col-auto mt-2">
                             <a href="{% url 'valor_referencia_update' pk=valor.pk %}" class="btn btn-outline-warning btn-sm">
                                 <i class="fas fa-pen me-1"></i> Editar
                             </a>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item text-muted text-center">No hay valores/parámetros registrados.</li>
-                        {% endfor %}
-                    </ul>
+                        </div>
+
+                    </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-3">
+                            No hay valores/parámetros registrados.
+                        </div>
+                    {% endfor %}
+
                 </div>
             </div>
 

@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -36,7 +37,7 @@ class PacienteCreateView(AdminRecepcionistaRequiredMixin, CreateView):
     model = Paciente
     form_class = PacienteForm
     # Usamos un template unificado
-    template_name = 'pacientes/paciente_registrar.html' 
+    template_name = 'pacientes/paciente_form.html' 
     success_url = reverse_lazy('paciente_list')
 
     def get_context_data(self, **kwargs):
@@ -44,7 +45,21 @@ class PacienteCreateView(AdminRecepcionistaRequiredMixin, CreateView):
         context['titulo'] = "Registrar Nuevo Paciente"
         return context
 
+    # --- CÁLCULO Y ASIGNACIÓN AL GUARDAR ---
     def form_valid(self, form):
+        # Calculamos la edad al momento del registro
+        fecha_nacimiento = form.instance.fecha_nacimiento
+        
+        if fecha_nacimiento:
+            today = date.today()
+            
+            # Lógica precisa de cálculo de edad en años
+            edad = today.year - fecha_nacimiento.year - (
+                (today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day)
+            )
+            # Asignamos el valor al campo de la base de datos
+            form.instance.edad_al_registro = edad
+            
         messages.success(self.request, "Paciente registrado exitosamente.")
         return super().form_valid(form)
 
@@ -52,7 +67,7 @@ class PacienteUpdateView(AdminRecepcionistaRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     # Usamos un template unificado
-    template_name = 'pacientes/paciente_editar.html'
+    template_name = 'pacientes/paciente_form.html'
     success_url = reverse_lazy('paciente_list')
 
     def get_context_data(self, **kwargs):
@@ -60,8 +75,22 @@ class PacienteUpdateView(AdminRecepcionistaRequiredMixin, UpdateView):
         context['titulo'] = "Editar Paciente"
         return context
 
+    # --- CÁLCULO Y ASIGNACIÓN AL GUARDAR ---
     def form_valid(self, form):
-        messages.success(self.request, "Paciente actualizado exitosamente.")
+        # Calculamos la edad al momento del registro
+        fecha_nacimiento = form.instance.fecha_nacimiento
+        
+        if fecha_nacimiento:
+            today = date.today()
+            
+            # Lógica precisa de cálculo de edad en años
+            edad = today.year - fecha_nacimiento.year - (
+                (today.month, today.day) < (fecha_nacimiento.month, fecha_nacimiento.day)
+            )
+            # Asignamos el valor al campo de la base de datos
+            form.instance.edad_al_registro = edad
+            
+        messages.success(self.request, "Paciente registrado exitosamente.")
         return super().form_valid(form)
 
 class PacienteDeleteView(AdminRecepcionistaRequiredMixin, DeleteView):

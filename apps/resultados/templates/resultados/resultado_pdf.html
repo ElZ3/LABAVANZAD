@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado Lab - Orden #{{ orden.pk }}</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2cm;
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                bottom: 0cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 3cm;
+            }
+        }
+        body { font-family: Helvetica, sans-serif; font-size: 11px; color: #333; }
+        
+        /* Encabezado */
+        .header-table { width: 100%; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 20px; }
+        .logo { font-size: 22px; font-weight: bold; color: #0056b3; }
+        .lab-info { text-align: right; font-size: 9px; color: #555; }
+        
+        /* Info Paciente */
+        .patient-box { width: 100%; background-color: #f8f9fa; border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; }
+        .patient-table { width: 100%; }
+        .patient-table td { padding: 2px; }
+        .label { font-weight: bold; color: #555; }
+
+        /* Tabla Resultados */
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th { border-bottom: 1px solid #000; text-align: left; padding: 5px; font-size: 10px; }
+        .results-table td { padding: 4px 5px; border-bottom: 1px solid #eee; }
+        
+        /* Agrupaciones */
+        .category-header { background-color: #e9ecef; font-weight: bold; font-size: 12px; padding: 5px; margin-top: 10px; color: #0056b3; border-bottom: 1px solid #ccc; }
+        .exam-header { font-weight: bold; padding-top: 10px; padding-bottom: 2px; font-size: 11px; }
+        
+        /* Footer */
+        .footer-box { text-align: center; font-size: 9px; color: #555; }
+        .signature-line { border-top: 1px solid #333; width: 200px; margin: 0 auto; margin-top: 40px; margin-bottom: 5px; }
+        
+        .watermark {
+            color: red; border: 2px solid red; padding: 10px; font-size: 40px;
+            opacity: 0.2; position: fixed; top: 40%; left: 25%; transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+
+    {% if resultado.estado != 'Validado' %}
+        <div class="watermark">BORRADOR NO VÁLIDO</div>
+    {% endif %}
+
+    <table class="header-table">
+        <tr>
+            <td><span class="logo">{{ empresa.nombre }}</span></td>
+            <td class="lab-info">
+                {{ empresa.direccion }}<br>
+                {{ empresa.telefono }} | {{ empresa.email }}
+            </td>
+        </tr>
+    </table>
+
+    <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">
+        INFORME DE RESULTADOS CLÍNICOS
+    </div>
+
+    <div class="patient-box">
+        <table class="patient-table">
+            <tr>
+                <td width="15%"><span class="label">Paciente:</span></td>
+                <td width="45%">{{ paciente.nombre }} {{ paciente.apellido }}</td>
+                <td width="15%"><span class="label">Orden #:</span></td>
+                <td width="25%">{{ orden.pk }}</td>
+            </tr>
+            <tr>
+                <td><span class="label">Identificación:</span></td>
+                <td>{{ paciente.dui }}</td>
+                <td><span class="label">Fecha Toma:</span></td>
+                <td>{{ orden.fecha_creacion|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+                <td><span class="label">Sexo:</span></td>
+                <td>{{ paciente.get_sexo_display }}</td>
+                <td><span class="label">Procedencia:</span></td>
+                <td>{{ orden.convenio.nombre|default:"Particular" }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th width="40%">Examen / Parámetro</th>
+                <th width="20%">Resultado</th>
+                <th width="15%">Unidad</th>
+                <th width="25%">Valores de Referencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in detalles %}
+                
+                {% ifchanged detalle.valor_referencia.examen.categoria %}
+                    <tr>
+                        <td colspan="4" class="category-header">
+                            {{ detalle.valor_referencia.examen.categoria.nombre|upper }}
+                        </td>
+                    </tr>
+                {% endifchanged %}
+
+                {% ifchanged detalle.valor_referencia.examen %}
+                    <tr>
+                        <td colspan="4" class="exam-header">
+                            {{ detalle.valor_referencia.examen.nombre }}
+                            <span style="font-weight: normal; font-size: 9px; color: #666;">
+                                (Método: {% for m in detalle.valor_referencia.examen.metodos.all %}{{ m.metodo }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                            </span>
+                        </td>
+                    </tr>
+                {% endifchanged %}
+
+                <tr>
+                    <td style="padding-left: 15px;">
+                        {% if detalle.valor_referencia.poblacion %}
+                            {{ detalle.valor_referencia.poblacion }}
+                        {% else %}
+                             Parametro
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ detalle.valor_obtenido }}</strong>
+                    </td>
+                    <td>{{ detalle.valor_referencia.unidad_medida }}</td>
+                    <td>
+                        {{ detalle.valor_referencia.rango_referencia }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if resultado.observaciones_generales %}
+        <div style="margin-top: 20px; border: 1px dashed #ccc; padding: 10px; font-size: 10px;">
+            <strong>Observaciones del Laboratorio:</strong><br>
+            {{ resultado.observaciones_generales }}
+        </div>
+    {% endif %}
+
+    <div id="footer_content">
+        {% if resultado.estado == 'Validado' %}
+            <div class="signature-line"></div>
+            <div class="footer-box">
+                <strong>{{ resultado.validado_por.get_full_name|default:resultado.validado_por.username }}</strong><br>
+                Validación Electrónica<br>
+                Fecha de Validación: {{ resultado.fecha_validacion|date:"d/m/Y H:i" }}
+            </div>
+        {% else %}
+            <div class="footer-box" style="color: red;">
+                RESULTADO PRELIMINAR - PENDIENTE DE VALIDACIÓN
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 10px; font-size: 8px; color: #999;">
+            Página <pdf:pagenumber> de <pdf:pagecount>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -33,7 +33,7 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = [
-            'nombre', 'apellido', 'fecha_nacimiento', 'sexo',
+            'nombre', 'apellido', 'fecha_nacimiento', 'edad_al_registro', 'sexo',
             'dui', 'telefono', 'correo',
         ]
         widgets = {
@@ -44,6 +44,7 @@ class PacienteForm(forms.ModelForm):
             'dui': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '12345678-9'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '77123456'}),
             'correo': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'ejemplo@correo.com'}),
+            'edad_al_registro': forms.HiddenInput(),
         }
 
     def clean(self):
